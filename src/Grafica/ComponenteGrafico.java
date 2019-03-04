@@ -8,8 +8,8 @@ public abstract class ComponenteGrafico extends JLabel {
 	
 	/*Variables*/
 	
-	protected final int alto  = 30;
-	protected final int ancho = 30;
+	protected final int alto  = 60;
+	protected final int ancho = 60;
 	protected int miX,miY;
 
 	protected int pixelX;
@@ -123,7 +123,7 @@ public abstract class ComponenteGrafico extends JLabel {
 		return null;
 	}
 	
-	public	int getDepth(){
+	public int getDepth(){
 		return profundidad;
 	}
 	

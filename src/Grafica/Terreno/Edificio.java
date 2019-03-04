@@ -12,7 +12,7 @@ public class Edificio extends Terreno{
 		super(x,y,l);
 		profundidad=2;
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/edificio.png"));
-		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
+		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
 		vida=10;
 	}

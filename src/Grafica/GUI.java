@@ -1,6 +1,7 @@
 package Grafica;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -27,7 +28,6 @@ public class GUI extends JFrame{
 	 //private JLabel panelRestantes;
 	 //private JLabel panelVidas;
 	 //private JLabel panelNivel;
-	 //private AudioClip musicaJuego;
 	 private boolean teclado=true;
 	 private JFrame yo=this;
 	    
@@ -41,12 +41,12 @@ public class GUI extends JFrame{
 	    	
 	        //seteo inicial
 	        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        this.setTitle("Battle Star");
+	        this.setTitle("IntoDeBrich 2019");
 	        this.setResizable(false);
 	        
 	        //setteo del panel contenedor
 	        
-	        setBounds(100,100,900,630);
+	        setBounds(400,150,486,630);
 	        contentPane = new JLayeredPane();
 	        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 	        contentPane.setVisible(true);
@@ -55,7 +55,7 @@ public class GUI extends JFrame{
 	        getContentPane().setLayout(null);
 	        contentPane.setLayout(null);
 	        JLabel fondo = new JLabel();
-	        ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/fondo.jpg"));
+	        ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/faintBlack.png"));
 			Icon icono = new ImageIcon(fot.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT));
 	        fondo.setVisible(true);
 	        fondo.setIcon(icono);
@@ -70,8 +70,8 @@ public class GUI extends JFrame{
 			panel.setLayout(null);
 			
 			mapaLogica.generarPanel();
-	        mapaLogica.crearYUbicarEnemigos();
-	        mapaLogica.crearJugador();
+	        //mapaLogica.crearYUbicarEnemigos();
+	        //mapaLogica.crearJugador();
 	        
 	        setVisible(true);
 	        
@@ -129,17 +129,31 @@ public class GUI extends JFrame{
 					}
 				}*/
 
+				@Override
 				public void keyTyped(KeyEvent arg0) {}
 
 				@Override
-				public void keyReleased(KeyEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void keyReleased(KeyEvent arg0) {}
 			
 	        }
 				);	       	        
-	    	}
+	 }
+	 
+	 /**
+	  * Launch the application.
+	  */
+		public static void main(String[] args) {
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					try {
+						GUI frame = new GUI();
+						frame.setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
  
 	 public void eliminarGrafico(ComponenteGrafico x){
 	  	contentPane.remove(x);

@@ -25,7 +25,6 @@ public class LogicaJuego {
 	private int puntaje=0;
 	private int enemigosMatados=0;
 	private int muertesAcumuladas;
-	private int nivelJugador;
 	private int []respawn;
 	private boolean termina;
 	private boolean porQueTermina;
@@ -40,16 +39,15 @@ public class LogicaJuego {
 	public LogicaJuego(GUI interfaz) {
 		termina=false;
 		
-		nivelJugador = 1;
 		
 		//hiloDisparoJugador=new MovimientoBalas(this); //maneja los disparos del jugador
-		hiloDisparoJugador.start();
+		//hiloDisparoJugador.start();
 		
 		//hiloDisparoEnemigo=new MovimientoBalas(this); //maneja los disparos de todos los enemigos
-		hiloDisparoEnemigo.start();
+		//hiloDisparoEnemigo.start();
 		
 		//hiloEnemigos = new MovimientoEnemigos(this); //maneja a los enemigos
-		hiloEnemigos.start();
+		//hiloEnemigos.start();
 		
 		
 		puntaje=0;			 //cuando llega a 20000, sumar una vida
@@ -59,16 +57,18 @@ public class LogicaJuego {
 		grafica=interfaz;
 		
 		//creo los respawn
+		/*
 		respawn=new int[8];
 		respawn[0]=3;respawn[1]=10;respawn[2]=19;respawn[3]=16;respawn[4]=4;
 		respawn[5]=10;respawn[6]=1;respawn[7]=16;
-		
+		*/
 		detenerTanque=false;
 		eliminarEnemigos=false;
 
 
 		mapa = new ComponenteGrafico[8][8];
-		//creo el mapa
+		
+		//Creacion del mapa
 		generacionDeMapaLogico();
 		
 	}
@@ -93,7 +93,9 @@ public class LogicaJuego {
 	 * Genera una matriz interna en Logica distribuyendo como máximo montañas, agua y tierra al azar
 	 */
 	public void generacionDeMapaLogico(){
-		//mapa[j][i]= new Agua(i,j,this);
+		for(int i=0;i<8;i++)
+		 	for(int j=0;j<8;j++)
+		 		mapa[i][j] = new Piso(i,j,this);
 	}
 	
 	/**
@@ -107,7 +109,7 @@ public class LogicaJuego {
 		if (x<0 || x>8 || y<0 || y>8)
 			aux=null;
 		else
-			aux=mapa[y][x];
+			aux=mapa[x][y];
 		return aux;
 	}
 			
@@ -196,8 +198,8 @@ public class LogicaJuego {
 	 * Ingresa los componentes del mapa en la parte grafica
 	 */
 	public void generarPanel(){
-		for(int i=0;i<20;i++)
-		 	for(int j=0;j<20;j++)
+		for(int i=0;i<8;i++)
+		 	for(int j=0;j<8;j++)
 		 		agregarGrafico(getComponente(i,j));		 	
 	}	
 	
@@ -299,10 +301,6 @@ public class LogicaJuego {
 	
 	public boolean getDetenerTanque(){
 		return detenerTanque;
-	}
-	
-	public void resetearNivel(){
-		nivelJugador = 1;
 	}
 	
 }

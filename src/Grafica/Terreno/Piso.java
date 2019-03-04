@@ -11,7 +11,10 @@ public class Piso extends Terreno{
 	public Piso(int x,int y,LogicaJuego l) {
 		super(x,y,l);
 		profundidad=2;
-		movimientoPosible=true;
+		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/fondo.png"));
+		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
+		this.setIcon(icono);
+		movimientoPosible=false;
 		vida=1;
 	}
 	
