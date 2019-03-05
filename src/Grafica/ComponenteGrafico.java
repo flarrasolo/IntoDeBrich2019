@@ -85,8 +85,6 @@ public abstract class ComponenteGrafico extends JLabel {
 	
 	public void reducirDisparoAndando(){}
 	
-	public abstract boolean mejorar();
-	
 	public abstract void colicion(ComponenteGrafico e);
 	
 	/*--------------------------------------------Consultas------------------------------------------------------*/

@@ -5,7 +5,7 @@ import java.util.Random;
 import Grafica.ComponenteGrafico;
 import Grafica.GUI;
 import Grafica.Jugadores.Jugador;
-import Grafica.Terreno.Piso;
+import Grafica.Terreno.*;
 import Logica.Hilos.HiloTiempoEspera;
 import Logica.Hilos.Movimiento;
 
@@ -90,26 +90,72 @@ public class LogicaJuego {
 	}
 	
 	/**
-	 * Genera una matriz interna en Logica distribuyendo como máximo montañas, agua y tierra al azar
+	 * Genera una matriz interna en Logica distribuyendo exactamente 8 edificios, 
+	 * entre 8 y 10 montañas, entre 7 y 10 celdas de agua y entre 4 y 6 celdas de tierra al azar
 	 */
 	public void generacionDeMapaLogico(){
+		Random aleatorio = new Random();
 		for(int i=0;i<8;i++)
 		 	for(int j=0;j<8;j++)
-		 		mapa[i][j] = new Piso(i,j,this);
+		 		mapa[j][i] = null;
+		
+		int cantEdificios = 8;
+		int cantMontanias =	8 + aleatorio.nextInt(3);
+		int cantAgua = 7 + aleatorio.nextInt(4);
+		int cantTierra = 4 + aleatorio.nextInt(3);
+		
+		for(int c=0;c<cantEdificios;c++) {
+			int x = aleatorio.nextInt(8);
+			int y = aleatorio.nextInt(8);
+			
+			if(mapa[y][x]==null)
+				mapa[y][x] = new Edificio(x,y,this);
+		}
+		
+		for(int c=0;c<cantMontanias;c++) {
+			int x = aleatorio.nextInt(8);
+			int y = aleatorio.nextInt(8);
+			
+			if(mapa[y][x]==null)
+				mapa[y][x] = new Montaña(x,y,this);
+		}
+		
+		for(int c=0;c<cantAgua;c++) {
+			int x = aleatorio.nextInt(8);
+			int y = aleatorio.nextInt(8);
+			
+			if(mapa[y][x]==null)
+				mapa[y][x] = new Agua(x,y,this);
+		}
+		
+		for(int c=0;c<cantTierra;c++) {
+			int x = aleatorio.nextInt(8);
+			int y = aleatorio.nextInt(8);
+			
+			if(mapa[y][x]==null)
+				mapa[y][x] = new Tierra(x,y,this);
+		}
+		
+		for(int i=0;i<8;i++)
+		 	for(int j=0;j<8;j++)
+		 		if(mapa[j][i]==null)
+					mapa[j][i] = new Piso(i,j,this);
+			
+			
 	}
 	
 	/**
-	 * Obtengo el componente en las coordenadas (x,y)
+	 * Obtengo el componente en las coordenadas (x,y) en el mapa
 	 * @param x coordenada en el eje x
 	 * @param y coordenada en el eje y
 	 * @return Componente en la posicion indicada
 	 */
 	public ComponenteGrafico getComponente(int x,int y){
 		ComponenteGrafico aux;
-		if (x<0 || x>8 || y<0 || y>8)
+		if ((x<0 || x>8) || (y<0 || y>8))
 			aux=null;
 		else
-			aux=mapa[x][y];
+			aux=mapa[y][x];
 		return aux;
 	}
 			
@@ -249,7 +295,8 @@ public class LogicaJuego {
 	}
 	
 	/**
-	 * Crea un enemigo random y lo ingresa en alguno de los respawn
+	 * Crea tres enemigos, dos escarabajos y una avispa y los ubica donde desea posible, 
+	 * en la mitad inferior del tablero
 	 */
 	public void crearYUbicarEnemigos(){
 		

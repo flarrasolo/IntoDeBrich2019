@@ -27,8 +27,6 @@ public class Tierra extends Terreno{
 	}
 
 	@Override
-	public void colicion(ComponenteGrafico e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void colicion(ComponenteGrafico e) {	}
+	
 }

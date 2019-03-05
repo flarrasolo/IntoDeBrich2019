@@ -30,12 +30,7 @@ public class Piso extends Terreno{
 		return true;
 	}
 
-	public void colicion(ComponenteGrafico x) {
-		
-	}
+	public void colicion(ComponenteGrafico x) {}
 
-	public boolean mejorar() {
-		return false;
-	}
 
 }

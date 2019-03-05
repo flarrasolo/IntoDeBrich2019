@@ -21,13 +21,6 @@ public class Agua extends Terreno{
 		return true;
 	}
 
-	public boolean mejorar() {
-		return false;
-	}
-
 	@Override
-	public void colicion(ComponenteGrafico e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void colicion(ComponenteGrafico e) {}
 }
