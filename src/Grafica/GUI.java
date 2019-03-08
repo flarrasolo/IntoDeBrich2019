@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -20,14 +21,14 @@ import javax.swing.border.EmptyBorder;
 import Logica.LogicaJuego;
 
 public class GUI extends JFrame{
+	
 	 private JLayeredPane contentPane;
 	 private LogicaJuego mapaLogica;
 	 private boolean disparo;
 	 private boolean movio;
-	 private JLabel btnRestart;
-	 //private JLabel panelRestantes;
-	 //private JLabel panelVidas;
-	 //private JLabel panelNivel;
+	 private JLabel msjUsuario;
+	 private JButton opcA,opcB;
+	 private ComponenteGrafico turnoDelJugador;
 	 private boolean teclado=true;
 	 private JFrame yo=this;
 	    
@@ -62,82 +63,35 @@ public class GUI extends JFrame{
 	        fondo.setBounds(0,0,600,600);
 	        contentPane.add(fondo);
 	        contentPane.setLayer(fondo, 1);
-	 
-	 
+	        
 	        JPanel panel = new JPanel();
 			panel.setBounds(600, 0, 321, 600);
 			contentPane.add(panel);
 			panel.setLayout(null);
 			
-			mapaLogica.generarPanel();
-	        //mapaLogica.crearYUbicarEnemigos();
+			opcA = new JButton("Mover");
+			opcA.setBounds(68, 531, 89, 23);
+			contentPane.add(opcA,new Integer(2));
+			
+			JButton opcB = new JButton("Atacar");
+			opcB.setBounds(300, 531, 89, 23);
+			contentPane.add(opcB,new Integer(2));
+			
+			msjUsuario = new JLabel("Seleccione la ubicación donde desea ubicar el Tanque");
+			msjUsuario.setForeground(Color.WHITE);
+			msjUsuario.setBounds(68, 494, 400, 14);
+			contentPane.add(msjUsuario,new Integer(2));
+			
+			
+			mapaLogica.generarPanel();			
+					
+			
 	        //mapaLogica.crearJugador();
 	        
 	        setVisible(true);
 	        
-	        //Agrego el oyente al teclado en el panel contenedor
-	        this.addKeyListener( new KeyListener() {
-	        	
-
-				public void keyTyped1(KeyEvent arg0) {}
-
-				public void keyPressed(KeyEvent e) {
-					if (teclado){
-						
-					 switch(e.getKeyCode()){
-					 	case KeyEvent.VK_UP :
-					 			mapaLogica.mover(3);		//Mover el Jugador hacia Arriba
-						 		movio=true;
-						 		
-					 		break;
-						case KeyEvent.VK_DOWN :
-								mapaLogica.mover(4);		//Mover el Jugador hacia Abajo
-						 		movio=true;
-							break;
-	        			case KeyEvent.VK_RIGHT :
-						 		mapaLogica.mover(1);		//Mover el Jugador hacia Derecha
-						 		movio=true;
-	        				break;
-	 					case KeyEvent.VK_LEFT :
-	 							mapaLogica.mover(2);		//Mover el Jugador hacia Izquierda
-						 		movio=true;
-	 						break;
-	 					case KeyEvent.VK_SPACE:
-	 							mapaLogica.crearDisparoJugador();	//Creo disparo del jugador
-	 							disparo=true;
-	 						break; 
-					 }}
-				}
-
-				/*public void keyReleased(KeyEvent e){
-					switch(e.getKeyCode()){	
-						case KeyEvent.VK_SPACE:
-							disparo=false;
-							break;
-						case KeyEvent.VK_UP : 
-					 		movio=false;
-							break;
-						case KeyEvent.VK_DOWN :
-							movio=false;
-							break;
-	        			case KeyEvent.VK_RIGHT :
-	        				movio=false;
-	        				break;
-	 					case KeyEvent.VK_LEFT :
-	 						movio=false;
-	 						break;
-					}
-				}*/
-
-				@Override
-				public void keyTyped(KeyEvent arg0) {}
-
-				@Override
-				public void keyReleased(KeyEvent arg0) {}
-			
-	        }
-				);	       	        
-	 }
+	       	        
+}
 	 
 	 /**
 	  * Launch the application.
@@ -170,9 +124,6 @@ public class GUI extends JFrame{
 	 public void terminarJuego(boolean Victoria){
 		 contentPane.removeAll();
 		 teclado= false;
-		 contentPane.add(btnRestart);
-		 btnRestart.enable();
-		 btnRestart.setVisible(true);
 		 yo=this;
 		if(Victoria){
 			ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/you_win.png"));
@@ -199,7 +150,8 @@ public class GUI extends JFrame{
 		}
 		contentPane.repaint();
 	 }
-			
-
 	 
+	 public void setMsjUsuario(String msj) {
+		 msjUsuario.setText(msj);
+	 }
 }

@@ -1,11 +1,13 @@
 package Logica;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Random;
 
 import Grafica.ComponenteGrafico;
 import Grafica.GUI;
-import Grafica.Jugadores.Jugador;
+import Grafica.Jugadores.*;
 import Grafica.Terreno.*;
 import Logica.Hilos.HiloTiempoEspera;
 import Logica.Hilos.Movimiento;
@@ -16,7 +18,10 @@ public class LogicaJuego {
 	/*Variables*/
 	
 	protected ComponenteGrafico[][] mapa;
-	protected ComponenteGrafico miJugador;
+	protected ComponenteGrafico miJugadorRobot;
+	protected ComponenteGrafico miJugadorTanque;
+	protected ComponenteGrafico[] enemigos;
+	protected ComponenteGrafico jugadorDeTurno;
 	
 	private Movimiento hiloEnemigos;
 	private Movimiento hiloDisparoJugador;
@@ -29,14 +34,17 @@ public class LogicaJuego {
 	private int []respawn;
 	private boolean termina;
 	private boolean porQueTermina;
-	private boolean detenerTanque;
+	private boolean detenerJugador;
 	private boolean eliminarEnemigos;
 
 	protected GUI grafica;
 	
 	//Constructor
 	public LogicaJuego(GUI interfaz) {
+		
 		termina=false;
+		miJugadorRobot = null;
+		miJugadorTanque = null;
 		
 		
 		//hiloDisparoJugador=new MovimientoBalas(this); //maneja los disparos del jugador
@@ -54,21 +62,21 @@ public class LogicaJuego {
 		muertesAcumuladas=0; //al llegar a 16, fin del juego con victoria
 		
 		grafica=interfaz;
-		
-		//creo los respawn
-		/*
-		respawn=new int[8];
-		respawn[0]=3;respawn[1]=10;respawn[2]=19;respawn[3]=16;respawn[4]=4;
-		respawn[5]=10;respawn[6]=1;respawn[7]=16;
-		*/
-		detenerTanque=false;
+
+		detenerJugador=false;
 		eliminarEnemigos=false;
 
 
 		mapa = new ComponenteGrafico[8][8];
+		enemigos = new ComponenteGrafico[3];
+		
+		
 		
 		//Creacion del mapa
 		generacionDeMapaLogico();
+		crearYUbicarEnemigos();
+		resaltarLugaresPosibles();
+		agregarOyentesMouseInicio();
 		
 	}
 	
@@ -94,10 +102,7 @@ public class LogicaJuego {
 	 */
 	public void generacionDeMapaLogico(){
 		Random aleatorio = new Random();
-		for(int i=0;i<8;i++)
-		 	for(int j=0;j<8;j++)
-		 		mapa[j][i] = null;
-		
+
 		int cantEdificios = 8;
 		int cantMontanias =	8 + aleatorio.nextInt(3);
 		int cantAgua = 7 + aleatorio.nextInt(4);
@@ -140,7 +145,47 @@ public class LogicaJuego {
 		 		if(mapa[j][i]==null)
 					mapa[j][i] = new Piso(i,j,this);
 			
-			
+		
+	}
+	
+	private void agregarOyentesMouseInicio() {
+		for (int i=0;i<8;i++)
+			for (int j=0;j<8;j++)
+				mapa[j][i].addMouseListener(new MouseListener() {
+
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
+						int ingX = comp.getX()/60;
+						int ingY = comp.getY()/60;
+						System.out.println(ingY+" - "+ingX);
+							//Controlar click en la mitad superior
+							if(ingY <= 3) {
+								//Si todavia no agregue el Tanque
+								if(miJugadorTanque == null) {
+									crearTanque(ingX,ingY);
+									resaltarLugaresPosibles();
+									grafica.setMsjUsuario("Seleccione la ubicación donde desea ubicar el Robot");
+								}
+								else {
+									crearRobot(ingX,ingY);
+								}
+							}
+					}
+
+					@Override
+					public void mousePressed(MouseEvent e) {}
+
+					@Override
+					public void mouseReleased(MouseEvent e) {}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {}
+
+					@Override
+					public void mouseExited(MouseEvent e) {}
+					
+				}); 
 	}
 	
 	/**
@@ -232,15 +277,6 @@ public class LogicaJuego {
 	}
 	
 	/**
-	 * Indica el puntaje total en el juego
-	 * @return Puntaje total
-	 */
-	/*
-	public	int obtenerPuntaje(){
-		return puntaje;
-	}*/
-	
-	/**
 	 * Ingresa los componentes del mapa en la parte grafica
 	 */
 	public void generarPanel(){
@@ -253,59 +289,69 @@ public class LogicaJuego {
 		this.repintarPanel();
 	}
 	
-	public void ubicarEnemigos() {
-		ArrayList<ComponenteGrafico> posiblesUbicaciones = new ArrayList<ComponenteGrafico> ();
-		
-		for(int i=4;i<8;i++) {
-			for(int j=4;j<8;j++) {
-				ComponenteGrafico celda =mapa[i][j]; 
-				if(celda.getPuedoPonerJugador())
-					posiblesUbicaciones.add(celda);
-			}
-			
-		}
-	}
-	
-	
-	
 	/*--------------------------------Jugador---------------------------------- */
 	
 	/**
-	 * @return Jugador
+	 * @return Robot
 	 */
-	public ComponenteGrafico getJugador(){
-		return miJugador;
+	public ComponenteGrafico getJugadorRobot(){
+		return miJugadorRobot;
 	}
 	
 	/**
-	 * Mueve al jugador en la direccion inducada
+	 * @return Tanque
+	 */
+	public ComponenteGrafico getJugadorTanque(){
+		return miJugadorTanque;
+	}
+	
+	/**
+	 * Mueve al jugador sea del Tanque o Robot en la direccion inducada
 	 * @param direccion a la que se desea mover
 	 */
-	public void mover(int direccion){
-		miJugador.mover(direccion);
+	public void moverJugador(int direccion){
+		jugadorDeTurno.mover(direccion);
 	}
 	
 	/**
-	 * Creo al jugador y lo ingreso al mapa logico
+	 * Creo al Robot y lo ingreso al mapa logico
 	 */
-	private void ingresarJugador(){
-		//miJugador = new Jugador(5,17,this);
-		mapa[miJugador.getPosicionY()][miJugador.getPosicionX()]=miJugador;
+	private void ingresarRobot(int x, int y){
+		miJugadorRobot = new Robot(x,y,this);
+		mapa[miJugadorRobot.getPosicionX()][miJugadorRobot.getPosicionY()]=miJugadorRobot;
 	}
 	
 	/**
-	 * Creo al jugador al iniciar el juego
+	 * Creo al Tanque y lo ingreso al mapa logico
 	 */
-	public void crearJugador(){
-    	ingresarJugador();
-        agregarGrafico(getJugador());
+	private void ingresarTanque(int x, int y){
+		miJugadorTanque = new Tanque(x,y,this);
+		mapa[miJugadorTanque.getPosicionX()][miJugadorTanque.getPosicionY()]=miJugadorTanque;
+	}
+	
+	/**
+	 * Creo al Robot al iniciar el juego
+	 */
+	public void crearRobot(int x, int y){
+    	ingresarRobot(x,y);
+    	eliminarGrafico(getComponente(x,y));
+        agregarGrafico(getJugadorRobot());
+    }
+	
+	/**
+	 * Creo al Tanque al iniciar el juego
+	 */
+	public void crearTanque(int x, int y){
+    	ingresarTanque(x,y);
+    	eliminarGrafico(getComponente(x,y));
+        agregarGrafico(getJugadorTanque());
     }
 	
 	/**
 	 * Creo el disparo del jugador
 	 */
-	public void crearDisparoJugador(){
-		ComponenteGrafico bala=miJugador.crearDisparo(); 
+	public void crearDisparoJugador(ComponenteGrafico jugador){
+		ComponenteGrafico bala=jugador.crearDisparo(); 
 		if(bala!=null){
     		agregarGrafico(bala);
     		repintarPanel();
@@ -317,7 +363,51 @@ public class LogicaJuego {
 	 * Crea tres enemigos, dos escarabajos y una avispa y los ubica donde desea posible, 
 	 * en la mitad inferior del tablero
 	 */
-	public void crearYUbicarEnemigos(){
+	private void crearYUbicarEnemigos(){
+		ArrayList<ComponenteGrafico> posiblesUbicaciones = getPosiblesUbicaciones(5,8,8);
+ 
+		Random r = new Random();
+		for(int i=0;i<2;i++) {
+			int celdaAleatoria = r.nextInt(posiblesUbicaciones.size());
+			ComponenteGrafico ubicacion = posiblesUbicaciones.get(celdaAleatoria);
+			ComponenteGrafico e1 = new Escarabajo(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this);
+			mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=e1;
+			enemigos[i]=e1;
+			posiblesUbicaciones.remove(celdaAleatoria);
+		}
+		
+		int celdaAleatoria = r.nextInt(posiblesUbicaciones.size());
+		ComponenteGrafico ubicacion = posiblesUbicaciones.get(celdaAleatoria);
+		ComponenteGrafico a1 = new Avispa(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this);
+		mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=a1;
+		enemigos[2]=a1;
+		posiblesUbicaciones.remove(celdaAleatoria);
+		
+	}
+	
+	private ArrayList<ComponenteGrafico> getPosiblesUbicaciones(int x,int topeI,int y){
+		ArrayList<ComponenteGrafico> posiblesUbicaciones = new ArrayList<ComponenteGrafico> ();
+		
+		//Recorro la mitad inferior del tablero para recuperar las celdas que no estan ocupadas
+		//por algun elemento de Terreno
+		for(int i=x;i<topeI;i++) {
+			for(int j=0;j<y;j++) {
+				ComponenteGrafico celda =mapa[i][j];
+				if(celda.getPuedoPonerJugador())
+					posiblesUbicaciones.add(celda);
+			}
+		}
+		
+		return posiblesUbicaciones;
+	}
+	
+	private void resaltarLugaresPosibles() {
+		ArrayList<ComponenteGrafico> posiblesUbicaciones = getPosiblesUbicaciones(0,4,8);
+			for(int x=0;x<posiblesUbicaciones.size();x++) {
+				ComponenteGrafico celda = posiblesUbicaciones.get(x);
+				setComponente(new PisoResaltado(celda.getPosicionX(),celda.getPosicionY(),this));
+			}
+		
 		
 	}
 
@@ -344,29 +434,20 @@ public class LogicaJuego {
     }
 	
 	/**
-	 * Si se murio un jugador y es el 4 seguido, entonces creo un PowerUp; 
-	 * si es el numero 16 eliminado, entonces gane el juego.
-	 * Si no termino el juego entonces creo un enemigo para mantener 4 enemigos 
-	 * siempre
+	 * Si se murio el tercer y ultimo enemigo, finaliza el juego con victoria para el usuario
 	 */
 	public void enemigoMurio(){
-		enemigosMatados++;
 		muertesAcumuladas++;
-		if(muertesAcumuladas == 16)
+		if(muertesAcumuladas == 3)
 			finalizarJuego(true);
-		else{
-			if(enemigosMatados == 4){
-				enemigosMatados = 0;
-			}
-		}
 	}
 
-	public void setDetenerTanque(boolean x){
-		detenerTanque=x;
+	public void setDetenerJugador(boolean x){
+		detenerJugador=x;
 	}
 	
-	public boolean getDetenerTanque(){
-		return detenerTanque;
+	public boolean getDetenerJugador(){
+		return detenerJugador;
 	}
 	
 	public boolean eliminarTodosLosEnemigos(){

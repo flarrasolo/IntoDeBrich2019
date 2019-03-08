@@ -32,7 +32,7 @@ public class MovimientoEnemigos extends Movimiento{
 	{
 		try{
 			while(!miLogica.finDelJuego() ){
-				if(!miLogica.getDetenerTanque()){
+				if(!miLogica.getDetenerJugador()){
 						
 					eliminar=new ArrayList<ComponenteGrafico>();
 					agregarEnemigo=false;

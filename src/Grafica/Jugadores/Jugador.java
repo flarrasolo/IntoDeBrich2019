@@ -15,6 +15,9 @@ public abstract class Jugador extends ComponenteGrafico{
 		super(x,y);		
 		disparosAndando=0;
 		puedeMover=true;;
+		movimientoPosible=true;
+		puedoPonerJugador = false;
+		vida=10;
 	}
 	
 	public int getVelMovimiento(){
