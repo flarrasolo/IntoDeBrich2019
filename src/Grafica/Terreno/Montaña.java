@@ -14,6 +14,7 @@ public class Montaña extends Terreno{
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/montaña.png"));
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
+		puedoPonerJugador = false;
 		vida=1;
 	}
 
@@ -22,16 +23,7 @@ public class Montaña extends Terreno{
 	}
 	
 	@Override
-	public void colicion(ComponenteGrafico e) {
-		vida--;		
-	}
+	public void colicion(ComponenteGrafico e) {}
 	
-	public boolean destruido() {
-		boolean resultado = false;
-		if(vida==0) {
-			ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/fondo.png"));
-			resultado = true;
-		}
-		return resultado;
-	}
+	
 }

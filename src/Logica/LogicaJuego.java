@@ -1,5 +1,6 @@
 package Logica;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import Grafica.ComponenteGrafico;
@@ -31,8 +32,6 @@ public class LogicaJuego {
 	private boolean detenerTanque;
 	private boolean eliminarEnemigos;
 
-	
-	
 	protected GUI grafica;
 	
 	//Constructor
@@ -236,9 +235,10 @@ public class LogicaJuego {
 	 * Indica el puntaje total en el juego
 	 * @return Puntaje total
 	 */
+	/*
 	public	int obtenerPuntaje(){
 		return puntaje;
-	}
+	}*/
 	
 	/**
 	 * Ingresa los componentes del mapa en la parte grafica
@@ -248,6 +248,25 @@ public class LogicaJuego {
 		 	for(int j=0;j<8;j++)
 		 		agregarGrafico(getComponente(i,j));		 	
 	}	
+	
+	public void actualizarPanel(){
+		this.repintarPanel();
+	}
+	
+	public void ubicarEnemigos() {
+		ArrayList<ComponenteGrafico> posiblesUbicaciones = new ArrayList<ComponenteGrafico> ();
+		
+		for(int i=4;i<8;i++) {
+			for(int j=4;j<8;j++) {
+				ComponenteGrafico celda =mapa[i][j]; 
+				if(celda.getPuedoPonerJugador())
+					posiblesUbicaciones.add(celda);
+			}
+			
+		}
+	}
+	
+	
 	
 	/*--------------------------------Jugador---------------------------------- */
 	
@@ -350,4 +369,7 @@ public class LogicaJuego {
 		return detenerTanque;
 	}
 	
+	public boolean eliminarTodosLosEnemigos(){
+		return eliminarEnemigos;
+	}
 }

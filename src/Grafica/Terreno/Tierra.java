@@ -27,6 +27,17 @@ public class Tierra extends Terreno{
 	}
 
 	@Override
-	public void colicion(ComponenteGrafico e) {	}
+	public void colicion(ComponenteGrafico e) {	
+		vida--;	
+	}
+	
+	public boolean destruido() {
+		boolean resultado = false;
+		if(vida==0) {
+			ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/fondo.png"));
+			resultado = true;
+		}
+		return resultado;
+	}
 	
 }

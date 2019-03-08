@@ -14,6 +14,7 @@ public class Edificio extends Terreno{
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/edificio.png"));
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
+		puedoPonerJugador = false;
 		vida=10;
 	}
 

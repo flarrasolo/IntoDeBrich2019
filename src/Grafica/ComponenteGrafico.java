@@ -19,6 +19,7 @@ public abstract class ComponenteGrafico extends JLabel {
 	protected int puntaje;
 	protected int vida;
 	
+	protected boolean puedoPonerJugador;
 	protected boolean movimientoPosible;
 	protected boolean movimientoPosibleDisparo;
 	
@@ -136,11 +137,15 @@ public abstract class ComponenteGrafico extends JLabel {
 	public int getDisparosSimultaneos(){
 		return 0;
 	}
-	/*
-	public int getNivel(){
-		return 0;
+	
+	public void setPuedoPonerJugador(boolean puedo) {
+		puedoPonerJugador = puedo;
 	}
-	*/
+
+	public boolean getPuedoPonerJugador() {
+		return puedoPonerJugador;
+	}
+	
 	public boolean getPuedeMover(){
 		return false;
 	}

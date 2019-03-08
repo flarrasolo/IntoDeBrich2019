@@ -15,6 +15,7 @@ public class Piso extends Terreno{
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
 		movimientoPosible=false;
+		puedoPonerJugador = true;
 		vida=1;
 	}
 	
