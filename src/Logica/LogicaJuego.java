@@ -455,7 +455,7 @@ public class LogicaJuego {
 		int y = c.getPosicionY();
 		ArrayList<ComponenteGrafico> listaRadio = new ArrayList<ComponenteGrafico> ();
 	
-		if(r>0) {
+		if(r>1) {
 			
 		}
 			
