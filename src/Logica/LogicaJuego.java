@@ -43,6 +43,7 @@ public class LogicaJuego {
 	public LogicaJuego(GUI interfaz) {
 		
 		termina=false;
+		
 		miJugadorRobot = null;
 		miJugadorTanque = null;
 		
@@ -78,9 +79,11 @@ public class LogicaJuego {
 		resaltarLugaresPosibles();
 		agregarOyentesMouseInicio();
 		
+		
+		
 	}
 	
-/* ---------------------------------Mapa----------------------------------*/
+/* ----------------------------------------------------Mapa--------------------------------------------------*/
 	/**
 	 * Repaint a todos los elementos del panel
 	 */
@@ -164,11 +167,53 @@ public class LogicaJuego {
 								//Si todavia no agregue el Tanque
 								if(miJugadorTanque == null) {
 									crearTanque(ingX,ingY);
-									resaltarLugaresPosibles();
 									grafica.setMsjUsuario("Seleccione la ubicación donde desea ubicar el Robot");
 								}
 								else {
 									crearRobot(ingX,ingY);
+									devolverPisoNormal();
+									grafica.setMsjUsuario("Turno de la Computadora");
+								}
+							}
+					}
+
+					@Override
+					public void mousePressed(MouseEvent e) {}
+
+					@Override
+					public void mouseReleased(MouseEvent e) {}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {}
+
+					@Override
+					public void mouseExited(MouseEvent e) {}
+					
+				}); 
+	}
+	
+	private void agregarOyentesMouseTurnos() {
+		for (int i=0;i<8;i++)
+			for (int j=0;j<8;j++)
+				mapa[j][i].addMouseListener(new MouseListener() {
+
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
+						int ingX = comp.getX()/60;
+						int ingY = comp.getY()/60;
+						System.out.println(ingY+" - "+ingX);
+							//Controlar click en la mitad superior
+							if(ingY <= 3) {
+								//Si todavia no agregue el Tanque
+								if(miJugadorTanque == null) {
+									crearTanque(ingY,ingX);
+									//resaltarLugaresPosibles();
+									grafica.setMsjUsuario("Seleccione la ubicación donde desea ubicar el Robot");
+								}
+								else {
+									crearRobot(ingY,ingX);
+									grafica.setMsjUsuario("Turno de la Computadora");
 								}
 							}
 					}
@@ -289,76 +334,6 @@ public class LogicaJuego {
 		this.repintarPanel();
 	}
 	
-	/*--------------------------------Jugador---------------------------------- */
-	
-	/**
-	 * @return Robot
-	 */
-	public ComponenteGrafico getJugadorRobot(){
-		return miJugadorRobot;
-	}
-	
-	/**
-	 * @return Tanque
-	 */
-	public ComponenteGrafico getJugadorTanque(){
-		return miJugadorTanque;
-	}
-	
-	/**
-	 * Mueve al jugador sea del Tanque o Robot en la direccion inducada
-	 * @param direccion a la que se desea mover
-	 */
-	public void moverJugador(int direccion){
-		jugadorDeTurno.mover(direccion);
-	}
-	
-	/**
-	 * Creo al Robot y lo ingreso al mapa logico
-	 */
-	private void ingresarRobot(int x, int y){
-		miJugadorRobot = new Robot(x,y,this);
-		mapa[miJugadorRobot.getPosicionX()][miJugadorRobot.getPosicionY()]=miJugadorRobot;
-	}
-	
-	/**
-	 * Creo al Tanque y lo ingreso al mapa logico
-	 */
-	private void ingresarTanque(int x, int y){
-		miJugadorTanque = new Tanque(x,y,this);
-		mapa[miJugadorTanque.getPosicionX()][miJugadorTanque.getPosicionY()]=miJugadorTanque;
-	}
-	
-	/**
-	 * Creo al Robot al iniciar el juego
-	 */
-	public void crearRobot(int x, int y){
-    	ingresarRobot(x,y);
-    	eliminarGrafico(getComponente(x,y));
-        agregarGrafico(getJugadorRobot());
-    }
-	
-	/**
-	 * Creo al Tanque al iniciar el juego
-	 */
-	public void crearTanque(int x, int y){
-    	ingresarTanque(x,y);
-    	eliminarGrafico(getComponente(x,y));
-        agregarGrafico(getJugadorTanque());
-    }
-	
-	/**
-	 * Creo el disparo del jugador
-	 */
-	public void crearDisparoJugador(ComponenteGrafico jugador){
-		ComponenteGrafico bala=jugador.crearDisparo(); 
-		if(bala!=null){
-    		agregarGrafico(bala);
-    		repintarPanel();
-    		hiloDisparoJugador.addBala(bala);
-		}
-	}
-	
 	/**
 	 * Crea tres enemigos, dos escarabajos y una avispa y los ubica donde desea posible, 
 	 * en la mitad inferior del tablero
@@ -397,7 +372,6 @@ public class LogicaJuego {
 					posiblesUbicaciones.add(celda);
 			}
 		}
-		
 		return posiblesUbicaciones;
 	}
 	
@@ -407,9 +381,87 @@ public class LogicaJuego {
 				ComponenteGrafico celda = posiblesUbicaciones.get(x);
 				setComponente(new PisoResaltado(celda.getPosicionX(),celda.getPosicionY(),this));
 			}
-		
-		
 	}
+	
+	private void devolverPisoNormal() {
+		ArrayList<ComponenteGrafico> posiblesUbicaciones = getPosiblesUbicaciones(0,4,8);
+		for(int x=0;x<posiblesUbicaciones.size();x++) {
+			ComponenteGrafico celda = posiblesUbicaciones.get(x);
+			setComponente(new Piso(celda.getPosicionX(),celda.getPosicionY(),this));
+		}
+	}
+	
+	/*------------------------------------------Jugador-------------------------------------------- */
+	
+	/**
+	 * @return Robot
+	 */
+	public ComponenteGrafico getJugadorRobot(){
+		return miJugadorRobot;
+	}
+	
+	/**
+	 * @return Tanque
+	 */
+	public ComponenteGrafico getJugadorTanque(){
+		return miJugadorTanque;
+	}
+	
+	/**
+	 * Mueve al jugador sea del Tanque o Robot en la direccion inducada
+	 * @param direccion a la que se desea mover
+	 */
+	public void moverJugador(int direccion){
+		jugadorDeTurno.mover(direccion);
+	}
+	
+	/**
+	 * Creo al Robot y lo ingreso al mapa logico
+	 */
+	private void ingresarRobot(int x, int y){
+		miJugadorRobot = new Robot(x,y,this);
+		mapa[miJugadorRobot.getPosicionX()][miJugadorRobot.getPosicionY()] = miJugadorRobot;
+	}
+	
+	/**
+	 * Creo al Tanque y lo ingreso al mapa logico
+	 */
+	private void ingresarTanque(int x, int y){
+		miJugadorTanque = new Tanque(x,y,this);
+		mapa[miJugadorTanque.getPosicionX()][miJugadorTanque.getPosicionY()] = miJugadorTanque;
+	}
+	
+	/**
+	 * Creo al Robot al iniciar el juego
+	 */
+	public void crearRobot(int x, int y){
+    	ingresarRobot(x,y);
+    	grafica.eliminarGrafico(getComponente(x,y));
+    	grafica.agregarGrafico(getJugadorRobot());
+    }
+	
+	/**
+	 * Creo al Tanque al iniciar el juego
+	 */
+	public void crearTanque(int x, int y){
+    	ingresarTanque(x,y);
+    	grafica.eliminarGrafico(getComponente(x,y));
+    	grafica.agregarGrafico(getJugadorTanque());
+    }
+	
+	/**
+	 * Creo el disparo del jugador
+	 */
+	public void crearDisparoJugador(ComponenteGrafico jugador){
+		ComponenteGrafico bala=jugador.crearDisparo(); 
+		if(bala!=null){
+    		agregarGrafico(bala);
+    		repintarPanel();
+    		hiloDisparoJugador.addBala(bala);
+		}
+	}
+	
+	
 
 	/* ---------------------------------Enemigo----------------------------------*/
 	
