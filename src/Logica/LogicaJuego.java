@@ -155,15 +155,14 @@ public class LogicaJuego {
 		for (int i=0;i<8;i++)
 			for (int j=0;j<8;j++)
 				mapa[j][i].addMouseListener(new MouseListener() {
-
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
 						int ingX = comp.getX()/60;
 						int ingY = comp.getY()/60;
-						System.out.println(ingY+" - "+ingX);
+							
 							//Controlar click en la mitad superior
-							if(ingY <= 3) {
+							if(ingY <= 3 && comp.getPuedoPonerJugador()) {
 								//Si todavia no agregue el Tanque
 								if(miJugadorTanque == null) {
 									crearTanque(ingX,ingY);
@@ -391,6 +390,81 @@ public class LogicaJuego {
 		}
 	}
 	
+	private ArrayList<ComponenteGrafico> getCeldasAdyacentes(ComponenteGrafico c) {
+		int x = c.getPosicionX();
+		int y = c.getPosicionY();
+		ArrayList<ComponenteGrafico> listaAdy = new ArrayList<ComponenteGrafico> ();
+		
+		//Casos especiales: Esquinas( (0,0);(0,7);(7,0);(7,7) ) 
+		if (x==0 && y == 0){//Esquina superior izquierda
+	        listaAdy.add(getComponente(0,1));
+	        listaAdy.add(getComponente(1,0));
+	    }
+	    else 
+	    	if (x==0 && y==7){//Esquina superior derecha
+	        listaAdy.add(getComponente(0,6));
+	        listaAdy.add(getComponente(1,7));
+	    	}
+	    	else    
+	    		if (x==7 && y==0){//Esquina inferior izquierda
+	    		listaAdy.add(getComponente(6,0));
+	    		listaAdy.add(getComponente(7,1));
+	    		}
+	    		else    
+	    			if (x==7 && y==7){//Esquina inferior derecha
+	    				listaAdy.add(getComponente(6,7));
+	    				listaAdy.add(getComponente(7,6));
+	    			}
+	    			else {//Casos Especiales: Bordes( (0,*);(*;0);(7,*);(*,7) )
+	    				if (x==0 && y!=0 && y!=7){//Borde Superior
+	    			        listaAdy.add(getComponente(0,y-1));
+	    			        listaAdy.add(getComponente(0,y+1));
+	    			        listaAdy.add(getComponente(1,y));
+	    			    }
+	    			    else 
+	    			    	if (x==7 && y!=0 && y!=7){//Borde Inferior
+	    			        listaAdy.add(getComponente(7,y+1));
+	    			        listaAdy.add(getComponente(7,y-1));
+	    			        listaAdy.add(getComponente(6,y));
+	    			    	}
+	    			    	else    
+	    			    		if (y==0 && x!=0 && x!=7){//Borde Izquierdo
+	    			    		listaAdy.add(getComponente(x-1,0));
+	    			    		listaAdy.add(getComponente(x+1,0));
+		    			        listaAdy.add(getComponente(x,1));
+	    			    		}
+	    			    		else    
+	    			    			if (y==7 && x!=0 && x!=7){//Borde Derecho
+	    			    				listaAdy.add(getComponente(x-1,7));
+	    			    				listaAdy.add(getComponente(x+1,7));
+	    		    			        listaAdy.add(getComponente(x,6));
+	    			    			}
+	    			    			else {//Adyacentes sin conflicto
+	    			    				listaAdy.add(getComponente(x-1,y));
+	    			    				listaAdy.add(getComponente(x,y-1));
+	    		    			        listaAdy.add(getComponente(x,y+1));
+	    		    			        listaAdy.add(getComponente(x+1,y));
+	    			    			}
+	    			}
+		
+		return listaAdy;
+	}
+	
+	private ArrayList<ComponenteGrafico> getCeldasRadio(ComponenteGrafico c,int r) {
+		int x = c.getPosicionX();
+		int y = c.getPosicionY();
+		ArrayList<ComponenteGrafico> listaRadio = new ArrayList<ComponenteGrafico> ();
+	
+		if(r>0) {
+			
+		}
+			
+			
+			
+		return listaRadio;
+	}
+	
+	
 	/*------------------------------------------Jugador-------------------------------------------- */
 	
 	/**
@@ -461,7 +535,14 @@ public class LogicaJuego {
 		}
 	}
 	
-	
+	public boolean fallaAtaque() {
+		boolean falla = false;
+		Random r = new Random();
+		int probab = r.nextInt(100);
+			if(probab<=29)
+				falla = true;
+		return falla;
+	}
 
 	/* ---------------------------------Enemigo----------------------------------*/
 	

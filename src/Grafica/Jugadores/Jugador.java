@@ -3,6 +3,7 @@ package Grafica.Jugadores;
 import Grafica.ComponenteGrafico;
 
 public abstract class Jugador extends ComponenteGrafico{
+	private static float probabFallo= (float) 0.3;;
 	protected int disparosSimultaneos;
 	protected int velMovimiento;
 	protected int velDisparo;
