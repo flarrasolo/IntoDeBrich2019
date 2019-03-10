@@ -1,4 +1,4 @@
-package Grafica.Jugadores;
+package Grafica.Jugadores.Movimientos;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public abstract class Movimiento {
 	 * @return
 	 */
 	public abstract ArrayList<ComponenteGrafico> getPosiblesMovimientos(int x,int y);
-	
+	/*
 	protected ArrayList<ComponenteGrafico> getCeldasAdyacentes(ComponenteGrafico c) {
 		int x = c.getPosicionX();
 		int y = c.getPosicionY();
@@ -138,4 +138,5 @@ public abstract class Movimiento {
 
 		return lista;
 	}
+	*/
 }

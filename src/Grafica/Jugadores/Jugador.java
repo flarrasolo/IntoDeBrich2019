@@ -1,6 +1,7 @@
 package Grafica.Jugadores;
 
 import Grafica.ComponenteGrafico;
+import Grafica.Jugadores.Movimientos.Movimiento;
 import Grafica.Terreno.Terreno;
 
 public abstract class Jugador extends ComponenteGrafico{

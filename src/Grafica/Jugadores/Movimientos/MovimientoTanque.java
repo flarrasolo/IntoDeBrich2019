@@ -1,4 +1,4 @@
-package Grafica.Jugadores;
+package Grafica.Jugadores.Movimientos;
 
 import java.util.ArrayList;
 
@@ -9,12 +9,11 @@ public class MovimientoTanque extends Movimiento{
 
 	public MovimientoTanque(LogicaJuego l) {
 		super(l);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public ArrayList<ComponenteGrafico> getPosiblesMovimientos(int x, int y) {
-		// TODO Auto-generated method stub
+		//5 celdas en total
 		return null;
 	}
 

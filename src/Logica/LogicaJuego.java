@@ -8,6 +8,7 @@ import java.util.Random;
 import Grafica.ComponenteGrafico;
 import Grafica.GUI;
 import Grafica.Jugadores.*;
+import Grafica.Jugadores.Movimientos.Movimiento;
 import Grafica.Terreno.*;
 import Logica.Hilos.HiloTiempoEspera;
 import Logica.Hilos.HiloTurnos;
@@ -33,8 +34,7 @@ public class LogicaJuego {
 	private ArrayList<ComponenteGrafico> edificios;
 	private boolean termina;
 	private boolean porQueTermina;
-	private boolean detenerJugador;
-	private boolean eliminarEnemigos;
+	private boolean eliminarEnemigo;
 
 	protected GUI grafica;
 	
@@ -52,10 +52,7 @@ public class LogicaJuego {
 		muertesAcumuladas=0; //al llegar a 16, fin del juego con victoria
 		
 		grafica=interfaz;
-
-		detenerJugador=false;
-		eliminarEnemigos=false;
-
+		eliminarEnemigo = false;
 
 		mapa = new ComponenteGrafico[8][8];
 		enemigos = new ArrayList<ComponenteGrafico>();
@@ -463,7 +460,7 @@ public class LogicaJuego {
 	 * Busca las celdas adyacentes al Tanque,al Robot, y a todos los edificios, si esta
 	 * dentro del rango de su movimiento suma esa celda a una lista de celdas de posicion
 	 * de ataque
-	 * @return
+	 * @return lista de posiciones de ataque a las que se puede mover un Enemigo
 	 */
 	public ArrayList<ComponenteGrafico> inteligenciaMovimientoEnemigos(){
 		ArrayList<ComponenteGrafico> posiblesMovInteligentes = new ArrayList<ComponenteGrafico> ();
@@ -499,19 +496,18 @@ public class LogicaJuego {
 	}
 	
 	
-	
-	private ArrayList<ComponenteGrafico> inteligenciaAtaqueEnemigos(){
-		ArrayList<ComponenteGrafico> posiblesAtqInteligentes = new ArrayList<ComponenteGrafico> ();
-				
-		Movimiento atqEnemigo = jugadorDeTurno.getMiAtaque();
+	/**
+	 * Determina si el Jugador del Usuario esta en posicion de atacar un Enemigo
+	 * @param j
+	 * @return true si el Jugador esta en posicion de atacar un enemigo, false caso contrario
+	 */
+	public boolean puedeAtacar(Jugador j) {
+		boolean puede = false;
 		
-		ArrayList<ComponenteGrafico> posiblesMovAtaque = atqEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+		Movimiento ataqueJugador = j.getMiAtaque();
+			
 		
-			for(ComponenteGrafico comp : posiblesMovAtaque)
-				if(comp == miJugadorTanque || comp == miJugadorRobot || edificios.contains(comp))
-					posiblesAtqInteligentes.add(comp);
-		
-		return posiblesAtqInteligentes;
+		return puede;
 	}
 	
 	/**
@@ -528,18 +524,6 @@ public class LogicaJuego {
 		muertesAcumuladas++;
 		if(muertesAcumuladas == 3)
 			finalizarJuego(true);
-	}
-
-	public void setDetenerJugador(boolean x){
-		detenerJugador=x;
-	}
-	
-	public boolean getDetenerJugador(){
-		return detenerJugador;
-	}
-	
-	public boolean eliminarTodosLosEnemigos(){
-		return eliminarEnemigos;
 	}
 	
 	protected ArrayList<ComponenteGrafico> getCeldasAdyacentes(ComponenteGrafico c) {
