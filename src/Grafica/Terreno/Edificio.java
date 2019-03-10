@@ -5,6 +5,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import Grafica.ComponenteGrafico;
+import Grafica.Jugadores.Jugador;
 import Logica.LogicaJuego;
 
 public class Edificio extends Terreno{
@@ -27,7 +28,8 @@ public class Edificio extends Terreno{
 	}
 
 	@Override
-	public void colicion(ComponenteGrafico e) {
-		vida--;
+	public void recibirAtaque(Jugador j) {
+		vida -=3;
+		
 	}
 }

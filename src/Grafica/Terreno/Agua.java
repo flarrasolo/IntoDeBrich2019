@@ -5,6 +5,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import Grafica.ComponenteGrafico;
+import Grafica.Jugadores.Jugador;
 import Logica.LogicaJuego;
 
 public class Agua extends Terreno{
@@ -18,10 +19,17 @@ public class Agua extends Terreno{
 		vida=1;
 	}
 
-	public boolean movimientoPosibleDisparo() {
-		return true;
+	@Override
+	public void recibirAtaque(Jugador j) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void colicion(ComponenteGrafico e) {}
+	public boolean movimientoPosibleDisparo() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
 }

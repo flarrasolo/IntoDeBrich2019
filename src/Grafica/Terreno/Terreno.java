@@ -18,8 +18,4 @@ public abstract class Terreno extends ComponenteGrafico{
 		return false;
 	}
 	
-	public boolean destruido() {
-		return false;
-	}
-	
 }

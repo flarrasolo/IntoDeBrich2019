@@ -10,7 +10,7 @@ import Grafica.GUI;
 import Grafica.Jugadores.*;
 import Grafica.Terreno.*;
 import Logica.Hilos.HiloTiempoEspera;
-import Logica.Hilos.Movimiento;
+import Logica.Hilos.HiloTurnos;
 
 
 public class LogicaJuego {
@@ -18,20 +18,19 @@ public class LogicaJuego {
 	/*Variables*/
 	
 	protected ComponenteGrafico[][] mapa;
+	protected Jugador jugadorDeTurno;
 	protected ComponenteGrafico miJugadorRobot;
 	protected ComponenteGrafico miJugadorTanque;
-	protected ComponenteGrafico[] enemigos;
-	protected ComponenteGrafico jugadorDeTurno;
+	protected ArrayList<ComponenteGrafico> enemigos;
 	
 	private Movimiento hiloEnemigos;
-	private Movimiento hiloDisparoJugador;
-	private Movimiento hiloDisparoEnemigo;
+	private HiloTurnos manejoTurnos;
 	private HiloTiempoEspera tiempoEsperaParaFinalizar;
 	
-	private int puntaje=0;
 	private int enemigosMatados=0;
 	private int muertesAcumuladas;
-	private int []respawn;
+	
+	private ArrayList<ComponenteGrafico> edificios;
 	private boolean termina;
 	private boolean porQueTermina;
 	private boolean detenerJugador;
@@ -48,17 +47,7 @@ public class LogicaJuego {
 		miJugadorTanque = null;
 		
 		
-		//hiloDisparoJugador=new MovimientoBalas(this); //maneja los disparos del jugador
-		//hiloDisparoJugador.start();
-		
-		//hiloDisparoEnemigo=new MovimientoBalas(this); //maneja los disparos de todos los enemigos
-		//hiloDisparoEnemigo.start();
-		
-		//hiloEnemigos = new MovimientoEnemigos(this); //maneja a los enemigos
-		//hiloEnemigos.start();
-		
-		
-		puntaje=0;			 //cuando llega a 20000, sumar una vida
+
 		enemigosMatados=0;   //cuando llega a 4 creo un powerUp y lo reseteo
 		muertesAcumuladas=0; //al llegar a 16, fin del juego con victoria
 		
@@ -69,8 +58,8 @@ public class LogicaJuego {
 
 
 		mapa = new ComponenteGrafico[8][8];
-		enemigos = new ComponenteGrafico[3];
-		
+		enemigos = new ArrayList<ComponenteGrafico>();
+		edificios = new ArrayList<ComponenteGrafico> ();
 		
 		
 		//Creacion del mapa
@@ -79,7 +68,10 @@ public class LogicaJuego {
 		resaltarLugaresPosibles();
 		agregarOyentesMouseInicio();
 		
-		
+
+		//Maneja los turnos
+		//manejoTurnos = new Hiloturnos(this); 
+		//hiloTurnos.start();		
 		
 	}
 	
@@ -115,8 +107,10 @@ public class LogicaJuego {
 			int x = aleatorio.nextInt(8);
 			int y = aleatorio.nextInt(8);
 			
-			if(mapa[y][x]==null)
+			if(mapa[y][x]==null) {
 				mapa[y][x] = new Edificio(x,y,this);
+				edificios.add(this.getComponente(x, y));
+			}
 		}
 		
 		for(int c=0;c<cantMontanias;c++) {
@@ -161,7 +155,6 @@ public class LogicaJuego {
 						int ingX = comp.getX()/60;
 						int ingY = comp.getY()/60;
 						
-						getCeldasRadio(comp,4);
 							//Controlar click en la mitad superior
 							if(ingY <= 3 && comp.getPuedoPonerJugador()) {
 								//Si todavia no agregue el Tanque
@@ -278,6 +271,8 @@ public class LogicaJuego {
 		grafica.agregarGrafico(x);
 	}
 
+	
+	//---------------------------------Jugabilidad----------------------------------------------
 	/**
 	 * Indica si termino el juego para frenar los hilos
 	 * @return True si termino el juego, False en caso contrario
@@ -295,6 +290,8 @@ public class LogicaJuego {
 	public void finalizarJuego(boolean x){
 		termina=true;
 		porQueTermina=x;
+		//Matar Hilo de Turnos
+		//manejoTurnos.stop();
 		tiempoEsperaParaFinalizar=new HiloTiempoEspera(this);
 		tiempoEsperaParaFinalizar.start();
 	}
@@ -314,8 +311,8 @@ public class LogicaJuego {
 	 * @param y coordenada y
 	 * @param deQuienEs indica si disparo enemigo (0) o jugador (1)
 	 */
-	public void eliminarColicion(int x,int y,ComponenteGrafico Ejecutor){
-		getComponente(x, y).colicion(Ejecutor);
+	public void eliminarColicion(int x,int y,Jugador Ejecutor){
+		getComponente(x, y).recibirAtaque(Ejecutor);
 		if(getComponente(x, y).getVida()==0){
 			eliminarGrafico(getComponente(x, y));
 			mapa[y][x]=new Piso(x,y,this);
@@ -349,7 +346,7 @@ public class LogicaJuego {
 			ComponenteGrafico ubicacion = posiblesUbicaciones.get(celdaAleatoria);
 			ComponenteGrafico e1 = new Escarabajo(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this);
 			mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=e1;
-			enemigos[i]=e1;
+			enemigos.add(e1);
 			posiblesUbicaciones.remove(celdaAleatoria);
 		}
 		
@@ -357,7 +354,7 @@ public class LogicaJuego {
 		ComponenteGrafico ubicacion = posiblesUbicaciones.get(celdaAleatoria);
 		ComponenteGrafico a1 = new Avispa(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this);
 		mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=a1;
-		enemigos[2]=a1;
+		enemigos.add(a1);
 		posiblesUbicaciones.remove(celdaAleatoria);
 		
 	}
@@ -392,110 +389,7 @@ public class LogicaJuego {
 			setComponente(new Piso(celda.getPosicionX(),celda.getPosicionY(),this));
 		}
 	}
-	
-	private ArrayList<ComponenteGrafico> getCeldasAdyacentes(ComponenteGrafico c) {
-		int x = c.getPosicionX();
-		int y = c.getPosicionY();
-		ArrayList<ComponenteGrafico> listaAdy = new ArrayList<ComponenteGrafico> ();
 		
-		//Casos especiales: Esquinas( (0,0);(0,7);(7,0);(7,7) ) 
-		if (x==0 && y == 0){//Esquina superior izquierda
-	        listaAdy.add(getComponente(0,1));
-	        listaAdy.add(getComponente(1,0));
-	    }
-	    else 
-	    	if (x==0 && y==7){//Esquina superior derecha
-	        listaAdy.add(getComponente(0,6));
-	        listaAdy.add(getComponente(1,7));
-	    	}
-	    	else    
-	    		if (x==7 && y==0){//Esquina inferior izquierda
-	    		listaAdy.add(getComponente(6,0));
-	    		listaAdy.add(getComponente(7,1));
-	    		}
-	    		else    
-	    			if (x==7 && y==7){//Esquina inferior derecha
-	    				listaAdy.add(getComponente(6,7));
-	    				listaAdy.add(getComponente(7,6));
-	    			}
-	    			else {//Casos Especiales: Bordes( (0,*);(*;0);(7,*);(*,7) )
-	    				if (x==0 && y!=0 && y!=7){//Borde Superior
-	    			        listaAdy.add(getComponente(0,y-1));
-	    			        listaAdy.add(getComponente(0,y+1));
-	    			        listaAdy.add(getComponente(1,y));
-	    			    }
-	    			    else 
-	    			    	if (x==7 && y!=0 && y!=7){//Borde Inferior
-	    			        listaAdy.add(getComponente(7,y+1));
-	    			        listaAdy.add(getComponente(7,y-1));
-	    			        listaAdy.add(getComponente(6,y));
-	    			    	}
-	    			    	else    
-	    			    		if (y==0 && x!=0 && x!=7){//Borde Izquierdo
-	    			    		listaAdy.add(getComponente(x-1,0));
-	    			    		listaAdy.add(getComponente(x+1,0));
-		    			        listaAdy.add(getComponente(x,1));
-	    			    		}
-	    			    		else    
-	    			    			if (y==7 && x!=0 && x!=7){//Borde Derecho
-	    			    				listaAdy.add(getComponente(x-1,7));
-	    			    				listaAdy.add(getComponente(x+1,7));
-	    		    			        listaAdy.add(getComponente(x,6));
-	    			    			}
-	    			    			else {//Adyacentes sin conflicto
-	    			    				listaAdy.add(getComponente(x-1,y));
-	    			    				listaAdy.add(getComponente(x,y-1));
-	    		    			        listaAdy.add(getComponente(x,y+1));
-	    		    			        listaAdy.add(getComponente(x+1,y));
-	    			    			}
-	    			}
-		
-		return listaAdy;
-	}
-	
-	private ArrayList<ComponenteGrafico> getCeldasRadio(ComponenteGrafico c,int radio) {
-		int x = c.getPosicionX();
-		int y = c.getPosicionY();
-		ArrayList<ComponenteGrafico> listaRadio = new ArrayList<ComponenteGrafico> ();
-	
-		if(radio>1) {
-			int k = 0;
-			
-			for(int i = radio; i >= 0; i--) {
-				for(int j = k; j >= 0; j--) {
-					// Pregunto para no agregar la misma posicion donde estoy parado
-					if( ! ((i==j) && (i == 0)) ) { 
-						if( (x+i) < 8 ) {
-							if (( y + j) < 8 )
-								System.out.println("Agrego posición: (" + (x+i) + "," + (y+j) + ")");
-								//listaRadio.add(getComponente(x+i,y+j));
-							// j != 0 para no agregar 2 veces la posicion
-							if( ( y - j) > -1 && j != 0) {
-								System.out.println("Agrego posición: (" + (x+i) + "," + (y-j) + ")");
-								//listaRadio.add(getComponente(x+i,y-j));
-							}
-						}
-						// i != 0 para no agregar dos veces
-						if( ( (x-i) > -1 ) && (i != 0) ) { 
-							if (( y + j) < 8 )
-								System.out.println("Agrego posición: (" + (x-i) + "," + (y+j) + ")");
-								//listaRadio.add(getComponente(x-i,y+j));
-							// j != 0 para no agregar 2 veces la posicion
-							if( ( y - j) > -1 && j != 0) { 
-								System.out.println("Agrego posición: (" + (x-i) + "," + (y-j) + ")");
-								//listaRadio.add(getComponente(x-i,y-j));
-							}
-						}
-					}
-				}
-				k++;
-			}
-		}
-			
-		return listaRadio;
-	}
-	
-	
 	/*------------------------------------------Jugador-------------------------------------------- */
 	
 	/**
@@ -554,18 +448,6 @@ public class LogicaJuego {
     	grafica.agregarGrafico(getJugadorTanque());
     }
 	
-	/**
-	 * Creo el disparo del jugador
-	 */
-	public void crearDisparoJugador(ComponenteGrafico jugador){
-		ComponenteGrafico bala=jugador.crearDisparo(); 
-		if(bala!=null){
-    		agregarGrafico(bala);
-    		repintarPanel();
-    		hiloDisparoJugador.addBala(bala);
-		}
-	}
-	
 	public boolean fallaAtaque() {
 		boolean falla = false;
 		Random r = new Random();
@@ -576,6 +458,61 @@ public class LogicaJuego {
 	}
 
 	/* ---------------------------------Enemigo----------------------------------*/
+	/**
+	 * Implementa la inteligencia para el movimiento de los Escarabajos y las Avispas
+	 * Busca las celdas adyacentes al Tanque,al Robot, y a todos los edificios, si esta
+	 * dentro del rango de su movimiento suma esa celda a una lista de celdas de posicion
+	 * de ataque
+	 * @return
+	 */
+	public ArrayList<ComponenteGrafico> inteligenciaMovimientoEnemigos(){
+		ArrayList<ComponenteGrafico> posiblesMovInteligentes = new ArrayList<ComponenteGrafico> ();
+		
+		//Guardo en una Lista todas las celdas adyacentes a los objetivos a destriuir para CPU
+		ArrayList<ComponenteGrafico> adyacentesDeObjetivos = new ArrayList<ComponenteGrafico> ();
+
+		for (ComponenteGrafico c : this.getCeldasAdyacentes(miJugadorTanque))
+			if(!adyacentesDeObjetivos.contains(c))
+				adyacentesDeObjetivos.add(c);
+		for (ComponenteGrafico c : this.getCeldasAdyacentes(miJugadorRobot))
+			if(!adyacentesDeObjetivos.contains(c))
+				adyacentesDeObjetivos.add(c);
+		for (ComponenteGrafico c : edificios)
+			for(ComponenteGrafico comp : this.getCeldasAdyacentes(c)) {
+				if(!adyacentesDeObjetivos.contains(comp))
+					adyacentesDeObjetivos.add(comp);
+			}
+		
+		//Guardo en una Lista todos las celdas de movimiento posibles de CPU
+		Movimiento movEnemigo = jugadorDeTurno.getMiMovimiento();
+		ArrayList<ComponenteGrafico> posiblesMovCPU = movEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+
+		//Cada celda que este en ambas listas, es un posible movimiento inteligente
+		//Para tomar posicion de ataque, y se guarda en la lista posiblesMovInteligentes 
+		//que se retorna
+		
+		for(ComponenteGrafico comp : adyacentesDeObjetivos)
+			if(posiblesMovCPU.contains(comp))
+				posiblesMovInteligentes.add(comp);
+
+		return posiblesMovInteligentes;
+	}
+	
+	
+	
+	private ArrayList<ComponenteGrafico> inteligenciaAtaqueEnemigos(){
+		ArrayList<ComponenteGrafico> posiblesAtqInteligentes = new ArrayList<ComponenteGrafico> ();
+				
+		Movimiento atqEnemigo = jugadorDeTurno.getMiAtaque();
+		
+		ArrayList<ComponenteGrafico> posiblesMovAtaque = atqEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+		
+			for(ComponenteGrafico comp : posiblesMovAtaque)
+				if(comp == miJugadorTanque || comp == miJugadorRobot || edificios.contains(comp))
+					posiblesAtqInteligentes.add(comp);
+		
+		return posiblesAtqInteligentes;
+	}
 	
 	/**
 	 * @return Hilo que contiene a los enemigos
@@ -583,19 +520,6 @@ public class LogicaJuego {
 	public Movimiento getHilosEnemigos(){
 		return hiloEnemigos;
 	}
-	
-	/**
-	 * Creo el disparo a partir del enemigo que disparo
-	 * @param x enemigo que disparo
-	 */
-	public void crearDisparoEnemigo(ComponenteGrafico x){
-    	ComponenteGrafico bala=x.crearDisparo();
-    	if(bala!=null){
-    		agregarGrafico(bala);
-    		repintarPanel();
-    		hiloDisparoEnemigo.addBala(bala);
-    	}
-    }
 	
 	/**
 	 * Si se murio el tercer y ultimo enemigo, finaliza el juego con victoria para el usuario
@@ -616,5 +540,65 @@ public class LogicaJuego {
 	
 	public boolean eliminarTodosLosEnemigos(){
 		return eliminarEnemigos;
+	}
+	
+	protected ArrayList<ComponenteGrafico> getCeldasAdyacentes(ComponenteGrafico c) {
+		int x = c.getPosicionX();
+		int y = c.getPosicionY();
+		ArrayList<ComponenteGrafico> listaAdy = new ArrayList<ComponenteGrafico> ();
+		
+		//Casos especiales: Esquinas( (0,0);(0,7);(7,0);(7,7) ) 
+		if (x==0 && y == 0){//Esquina superior izquierda
+	        listaAdy.add(getComponente(0,1));
+	        listaAdy.add(getComponente(1,0));
+	    }
+	    else 
+	    	if (x==0 && y==7){//Esquina superior derecha
+	        listaAdy.add(getComponente(0,6));
+	        listaAdy.add(getComponente(1,7));
+	    	}
+	    	else    
+	    		if (x==7 && y==0){//Esquina inferior izquierda
+	    		listaAdy.add(getComponente(6,0));
+	    		listaAdy.add(getComponente(7,1));
+	    		}
+	    		else    
+	    			if (x==7 && y==7){//Esquina inferior derecha
+	    				listaAdy.add(getComponente(6,7));
+	    				listaAdy.add(getComponente(7,6));
+	    			}
+	    			else {//Casos Especiales: Bordes( (0,*);(*;0);(7,*);(*,7) )
+	    				if (x==0 && y!=0 && y!=7){//Borde Superior
+	    			        listaAdy.add(getComponente(0,y-1));
+	    			        listaAdy.add(getComponente(0,y+1));
+	    			        listaAdy.add(getComponente(1,y));
+	    			    }
+	    			    else 
+	    			    	if (x==7 && y!=0 && y!=7){//Borde Inferior
+	    			        listaAdy.add(getComponente(7,y+1));
+	    			        listaAdy.add(getComponente(7,y-1));
+	    			        listaAdy.add(getComponente(6,y));
+	    			    	}
+	    			    	else    
+	    			    		if (y==0 && x!=0 && x!=7){//Borde Izquierdo
+	    			    		listaAdy.add(getComponente(x-1,0));
+	    			    		listaAdy.add(getComponente(x+1,0));
+		    			        listaAdy.add(getComponente(x,1));
+	    			    		}
+	    			    		else    
+	    			    			if (y==7 && x!=0 && x!=7){//Borde Derecho
+	    			    				listaAdy.add(getComponente(x-1,7));
+	    			    				listaAdy.add(getComponente(x+1,7));
+	    		    			        listaAdy.add(getComponente(x,6));
+	    			    			}
+	    			    			else {//Adyacentes sin conflicto
+	    			    				listaAdy.add(getComponente(x-1,y));
+	    			    				listaAdy.add(getComponente(x,y-1));
+	    		    			        listaAdy.add(getComponente(x,y+1));
+	    		    			        listaAdy.add(getComponente(x+1,y));
+	    			    			}
+	    			}
+		
+		return listaAdy;
 	}
 }

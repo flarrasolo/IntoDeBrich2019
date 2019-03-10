@@ -2,6 +2,11 @@ package Logica.Hilos;
 
 import Logica.LogicaJuego;
 
+/**
+ * Clase dedicada a un tiempo de espera antes de finalizar el Juego
+ * @author Usuario
+ *
+ */
 public class HiloTiempoEspera extends Thread{
 	protected int tiempo;
 	protected LogicaJuego miLogica;

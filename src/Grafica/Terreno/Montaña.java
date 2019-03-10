@@ -5,6 +5,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import Grafica.ComponenteGrafico;
+import Grafica.Jugadores.Jugador;
 import Logica.LogicaJuego;
 
 public class Montaña extends Terreno{
@@ -21,9 +22,14 @@ public class Montaña extends Terreno{
 	public boolean movimientoPosibleDisparo() {
 		return true;
 	}
-	
+
 	@Override
-	public void colicion(ComponenteGrafico e) {}
+	public void recibirAtaque(Jugador j) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	
 	
 }

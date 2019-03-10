@@ -5,6 +5,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import Grafica.ComponenteGrafico;
+import Grafica.Jugadores.Jugador;
 import Logica.LogicaJuego;
 
 public class Piso extends Terreno{
@@ -32,5 +33,11 @@ public class Piso extends Terreno{
 	}
 
 	public void colicion(ComponenteGrafico x) {}
+
+	@Override
+	public void recibirAtaque(Jugador e) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

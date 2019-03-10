@@ -6,6 +6,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import Grafica.ComponenteGrafico;
+import Grafica.Terreno.Terreno;
 import Logica.LogicaJuego;
 
 public class Escarabajo extends Jugador{
@@ -16,8 +17,21 @@ public class Escarabajo extends Jugador{
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
 	}
+
 	@Override
-	public void colicion(ComponenteGrafico e) {
+	public void atacarTerreno(Terreno t) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void atacarJugador(Jugador j) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recibirAtaque(Jugador j) {
 		// TODO Auto-generated method stub
 		
 	}

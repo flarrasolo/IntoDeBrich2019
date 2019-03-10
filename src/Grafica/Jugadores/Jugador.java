@@ -1,9 +1,12 @@
 package Grafica.Jugadores;
 
 import Grafica.ComponenteGrafico;
+import Grafica.Terreno.Terreno;
 
 public abstract class Jugador extends ComponenteGrafico{
 	private static float probabFallo= (float) 0.3;;
+	protected Movimiento miMovimiento;
+	protected Movimiento miAtaque;
 	protected int disparosSimultaneos;
 	protected int velMovimiento;
 	protected int velDisparo;
@@ -56,5 +59,18 @@ public abstract class Jugador extends ComponenteGrafico{
 	public void reducirDisparoAndando(){
 		disparosAndando--;
 	}
+	
+	public abstract void atacarTerreno(Terreno t);
+	
+	public abstract void atacarJugador(Jugador j);
+
+	public Movimiento getMiMovimiento() {
+		return miMovimiento;
+	}
+
+	public Movimiento getMiAtaque() {
+		return miAtaque;
+	}
+	
 
 }

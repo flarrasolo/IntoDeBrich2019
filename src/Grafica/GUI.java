@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Logica.LogicaJuego;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class GUI extends JFrame{
 	
@@ -70,10 +72,20 @@ public class GUI extends JFrame{
 			panel.setLayout(null);
 			
 			opcA = new JButton("Mover");
+			opcA.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					//ELIGIO MOVER
+				}
+			});
 			opcA.setBounds(68, 531, 89, 23);
 			contentPane.add(opcA,new Integer(2));
 			
 			JButton opcB = new JButton("Atacar");
+			opcB.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					//ELIGIO ATACAR
+				}
+			});
 			opcB.setBounds(300, 531, 89, 23);
 			contentPane.add(opcB,new Integer(2));
 			

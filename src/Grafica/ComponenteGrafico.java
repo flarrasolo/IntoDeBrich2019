@@ -2,6 +2,7 @@ package Grafica;
 
 import javax.swing.JLabel;
 
+import Grafica.Jugadores.Jugador;
 import Logica.LogicaJuego;
 
 public abstract class ComponenteGrafico extends JLabel {
@@ -55,39 +56,20 @@ public abstract class ComponenteGrafico extends JLabel {
 	public void setY(int y){
 		pixelY=y;
 	}
-
-	public ComponenteGrafico crearDisparo(){
-		return null;
-	}
 	
 	public void setMovimientoPosible(boolean x){
 		movimientoPosible=x;
 	}
 	
 	public void setDireccion(int d){}
-	
-	public void aumentarVida(){}
-	
+		
 	public void posicionImagen(int i){}
 
 	public void mover(int direccion){}
-	
-	public void subirNivel(){}
-	
-	public void bajarNivel(){}
-	
-	public void setEjecutor(ComponenteGrafico tanque){}
-	
-	public void setState(int i){}
-	
-	public void usaCasco(boolean x){}
-	
+			
 	public void puedeMover(){}
 	
-	public void reducirDisparoAndando(){}
-	
-	public abstract void colicion(ComponenteGrafico e);
-	
+	public abstract void recibirAtaque(Jugador j);
 	/*--------------------------------------------Consultas------------------------------------------------------*/
 	
 	public int getDireccion(){
@@ -163,5 +145,6 @@ public abstract class ComponenteGrafico extends JLabel {
 	public abstract boolean movimientoPosibleDisparo();
 	
 	public abstract boolean movimientoPosibleEnemigo();
+
 	
 }

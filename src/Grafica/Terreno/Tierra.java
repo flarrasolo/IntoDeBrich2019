@@ -5,6 +5,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import Grafica.ComponenteGrafico;
+import Grafica.Jugadores.Jugador;
 import Logica.LogicaJuego;
 
 public class Tierra extends Terreno{
@@ -28,10 +29,11 @@ public class Tierra extends Terreno{
 	}
 
 	@Override
-	public void colicion(ComponenteGrafico e) {	
-		vida--;	
+	public void recibirAtaque(Jugador j) {
+		// TODO Auto-generated method stub
+		
 	}
-	
+		
 	public boolean destruido() {
 		boolean resultado = false;
 		if(vida==0) {
