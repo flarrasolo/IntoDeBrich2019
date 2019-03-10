@@ -160,7 +160,8 @@ public class LogicaJuego {
 						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
 						int ingX = comp.getX()/60;
 						int ingY = comp.getY()/60;
-							
+						
+						getCeldasRadio(comp,4);
 							//Controlar click en la mitad superior
 							if(ingY <= 3 && comp.getPuedoPonerJugador()) {
 								//Si todavia no agregue el Tanque
@@ -201,7 +202,9 @@ public class LogicaJuego {
 						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
 						int ingX = comp.getX()/60;
 						int ingY = comp.getY()/60;
-						System.out.println(ingY+" - "+ingX);
+						//System.out.println(ingY+" - "+ingX);
+						
+						
 							//Controlar click en la mitad superior
 							if(ingY <= 3) {
 								//Si todavia no agregue el Tanque
@@ -450,16 +453,44 @@ public class LogicaJuego {
 		return listaAdy;
 	}
 	
-	private ArrayList<ComponenteGrafico> getCeldasRadio(ComponenteGrafico c,int r) {
+	private ArrayList<ComponenteGrafico> getCeldasRadio(ComponenteGrafico c,int radio) {
 		int x = c.getPosicionX();
 		int y = c.getPosicionY();
 		ArrayList<ComponenteGrafico> listaRadio = new ArrayList<ComponenteGrafico> ();
 	
-		if(r>1) {
+		if(radio>1) {
+			int k = 0;
 			
+			for(int i = radio; i >= 0; i--) {
+				for(int j = k; j >= 0; j--) {
+					// Pregunto para no agregar la misma posicion donde estoy parado
+					if( ! ((i==j) && (i == 0)) ) { 
+						if( (x+i) < 8 ) {
+							if (( y + j) < 8 )
+								System.out.println("Agrego posición: (" + (x+i) + "," + (y+j) + ")");
+								//listaRadio.add(getComponente(x+i,y+j));
+							// j != 0 para no agregar 2 veces la posicion
+							if( ( y - j) > -1 && j != 0) {
+								System.out.println("Agrego posición: (" + (x+i) + "," + (y-j) + ")");
+								//listaRadio.add(getComponente(x+i,y-j));
+							}
+						}
+						// i != 0 para no agregar dos veces
+						if( ( (x-i) > -1 ) && (i != 0) ) { 
+							if (( y + j) < 8 )
+								System.out.println("Agrego posición: (" + (x-i) + "," + (y+j) + ")");
+								//listaRadio.add(getComponente(x-i,y+j));
+							// j != 0 para no agregar 2 veces la posicion
+							if( ( y - j) > -1 && j != 0) { 
+								System.out.println("Agrego posición: (" + (x-i) + "," + (y-j) + ")");
+								//listaRadio.add(getComponente(x-i,y-j));
+							}
+						}
+					}
+				}
+				k++;
+			}
 		}
-			
-			
 			
 		return listaRadio;
 	}
