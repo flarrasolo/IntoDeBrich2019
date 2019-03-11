@@ -26,13 +26,13 @@ public class MovimientoRadio extends Movimiento{
 			for(int i = radio; i >= 0; i--) {
 				for(int j = k; j >= 0; j--) {
 					// Pregunto para no agregar la misma posicion donde estoy parado
-					if( ! ((i==j) && (i == 0)) ) { 
+					if(!((i == j) && (i == 0))) { 
 						if( (x+i) < 8 ) {
 							if (( y + j) < 8 )
 								//System.out.println("Agrego posición: (" + (x+i) + "," + (y+j) + ")");
 								listaRadio.add(logica.getComponente(x+i,y+j));
 							// j != 0 para no agregar 2 veces la posicion
-							if( ( y - j) > -1 && j != 0) {
+							if( (( y - j) > -1) && j != 0) {
 								//System.out.println("Agrego posición: (" + (x+i) + "," + (y-j) + ")");
 								listaRadio.add(logica.getComponente(x+i,y-j));
 							}

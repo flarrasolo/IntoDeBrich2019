@@ -6,13 +6,14 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import Grafica.ComponenteGrafico;
+import Grafica.Jugadores.Movimientos.Movimiento;
 import Grafica.Terreno.Terreno;
 import Logica.LogicaJuego;
 
 public class Tanque extends Jugador{
 	private int movimientosRestantes;
-	public Tanque(int x, int y, LogicaJuego l) {
-		super(x,y);
+	public Tanque(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
+		super(x,y,movimiento,ataque);
 		profundidad=2;
 		movimientosRestantes = 5;
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/tanque.png"));

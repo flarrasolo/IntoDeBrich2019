@@ -17,7 +17,7 @@ public class Tierra extends Terreno{
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
 		puedoPonerJugador = false;
-		vida=1;
+		energia=1;
 	}
 
 	public boolean movimientoPosibleDisparo() {
@@ -36,7 +36,7 @@ public class Tierra extends Terreno{
 		
 	public boolean destruido() {
 		boolean resultado = false;
-		if(vida==0) {
+		if(energia==0) {
 			ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/fondo.png"));
 			resultado = true;
 		}

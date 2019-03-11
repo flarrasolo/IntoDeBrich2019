@@ -18,7 +18,7 @@ public class PisoResaltado extends Terreno{
 		this.setIcon(icono);
 		movimientoPosible=false;
 		puedoPonerJugador = true;
-		vida=1;
+		energia=1;
 	}
 	
 	public boolean movimientoPosible() {

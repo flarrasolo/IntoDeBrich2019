@@ -26,6 +26,8 @@ public class HiloTurnos extends Thread{
 		proximoJugadorUsuario = 0;
 		proximoJugadorComputadora = 0;
 		
+		turnoJugador = false;
+		turnoComputadora = true;
 		mover = false;
 		atacar = false;
 		
@@ -38,6 +40,14 @@ public class HiloTurnos extends Thread{
 	public void run() {
 		
 		while(!miLogica.finDelJuego()) {
+			
+			if(turnoComputadora) {
+				
+			}
+			else //Turno Jugador 
+			{
+				
+			}
 			
 		//ResaltarJugador?
 		//Elegir MoverAtacar (Botón en GUI->settear atributo acá en base a lo elegido)

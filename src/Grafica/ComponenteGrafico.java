@@ -18,7 +18,7 @@ public abstract class ComponenteGrafico extends JLabel {
 	protected int profundidad;
 	protected int direccion;
 	protected int puntaje;
-	protected int vida;
+	protected int energia;
 	
 	protected boolean puedoPonerJugador;
 	protected boolean movimientoPosible;
@@ -80,6 +80,10 @@ public abstract class ComponenteGrafico extends JLabel {
 		return pixelX;
 	}
 	
+	public int getY(){
+		return pixelY;
+	}
+	
 	public int getPosicionX(){
 		return miX;
 	}
@@ -88,36 +92,13 @@ public abstract class ComponenteGrafico extends JLabel {
 		return miY;
 	}
 	
-	public int getY(){
-		return pixelY;
-	}
 	
-	public int getPuntos(){
-		return puntaje;
-	}
-
-	public int getVida(){
-		return vida;
-	}
-	
-	public ComponenteGrafico getEjecutor(){
-		return null;
+	public int getEnergia(){
+		return energia;
 	}
 	
 	public int getDepth(){
 		return profundidad;
-	}
-	
-	public int getVelMovimiento(){
-		return 0;
-	}
-	
-	public int getVelocidadDisparo(){
-		return 0;
-	}
-	
-	public int getDisparosSimultaneos(){
-		return 0;
 	}
 	
 	public void setPuedoPonerJugador(boolean puedo) {
@@ -129,10 +110,6 @@ public abstract class ComponenteGrafico extends JLabel {
 	}
 	
 	public boolean getPuedeMover(){
-		return false;
-	}
-	
-	public boolean afectaAcero(){
 		return false;
 	}
 	

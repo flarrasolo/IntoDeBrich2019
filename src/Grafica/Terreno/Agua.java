@@ -16,7 +16,7 @@ public class Agua extends Terreno{
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
 		puedoPonerJugador = false;
-		vida=1;
+		energia=1;
 	}
 
 	@Override

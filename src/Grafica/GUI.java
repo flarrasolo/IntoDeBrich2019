@@ -30,7 +30,6 @@ public class GUI extends JFrame{
 	 private boolean movio;
 	 private JLabel msjUsuario;
 	 private JButton opcA,opcB;
-	 private ComponenteGrafico turnoDelJugador;
 	 private boolean teclado=true;
 	 private JFrame yo=this;
 	    
@@ -74,7 +73,7 @@ public class GUI extends JFrame{
 			opcA = new JButton("Mover");
 			opcA.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					//ELIGIO MOVER
+					mapaLogica.setMueve(true);
 				}
 			});
 			opcA.setBounds(68, 531, 89, 23);
@@ -83,7 +82,7 @@ public class GUI extends JFrame{
 			JButton opcB = new JButton("Atacar");
 			opcB.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					//ELIGIO ATACAR
+					mapaLogica.setAtaca(true);
 				}
 			});
 			opcB.setBounds(300, 531, 89, 23);

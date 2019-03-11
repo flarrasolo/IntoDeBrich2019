@@ -5,24 +5,22 @@ import Grafica.Jugadores.Movimientos.Movimiento;
 import Grafica.Terreno.Terreno;
 
 public abstract class Jugador extends ComponenteGrafico{
-	private static float probabFallo= (float) 0.3;;
+	
+	protected int daño,dañoEdificios;
 	protected Movimiento miMovimiento;
 	protected Movimiento miAtaque;
 	protected int disparosSimultaneos;
 	protected int velMovimiento;
 	protected int velDisparo;
-	protected boolean puedeMover;
-	protected int disparosAndando;
 	
-	//protected Movimiento hiloFluido;
-	
-	public Jugador(int x,int y){
+	public Jugador(int x,int y,Movimiento miMov,Movimiento miAtq){
 		super(x,y);		
-		disparosAndando=0;
-		puedeMover=true;;
 		movimientoPosible=true;
 		puedoPonerJugador = false;
-		vida=10;
+		energia=10;
+		
+		miMovimiento = miMov;
+		miAtaque = miAtq;
 	}
 	
 	public int getVelMovimiento(){
@@ -53,14 +51,6 @@ public abstract class Jugador extends ComponenteGrafico{
 		return false;
 	}
 	
-	public boolean getPuedeMover(){
-		return puedeMover;
-	}
-	
-	public void reducirDisparoAndando(){
-		disparosAndando--;
-	}
-	
 	public abstract void atacarTerreno(Terreno t);
 	
 	public abstract void atacarJugador(Jugador j);
@@ -71,6 +61,22 @@ public abstract class Jugador extends ComponenteGrafico{
 
 	public Movimiento getMiAtaque() {
 		return miAtaque;
+	}
+
+	public int getDaño() {
+		return daño;
+	}
+
+	public void setDaño(int daño) {
+		this.daño = daño;
+	}
+
+	public int getDañoEdificios() {
+		return dañoEdificios;
+	}
+
+	public void setDañoEdificios(int dañoEdificios) {
+		this.dañoEdificios = dañoEdificios;
 	}
 	
 

@@ -16,7 +16,7 @@ public class Edificio extends Terreno{
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
 		puedoPonerJugador = false;
-		vida=10;
+		energia=10;
 	}
 
 	public boolean movimientoPosibleDisparo() {
@@ -29,7 +29,7 @@ public class Edificio extends Terreno{
 
 	@Override
 	public void recibirAtaque(Jugador j) {
-		vida -=3;
+		energia -=j.getDañoEdificios();
 		
 	}
 }

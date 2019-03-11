@@ -8,7 +8,8 @@ import java.util.Random;
 import Grafica.ComponenteGrafico;
 import Grafica.GUI;
 import Grafica.Jugadores.*;
-import Grafica.Jugadores.Movimientos.Movimiento;
+import Grafica.Jugadores.Ataques.*;
+import Grafica.Jugadores.Movimientos.*;
 import Grafica.Terreno.*;
 import Logica.Hilos.HiloTiempoEspera;
 import Logica.Hilos.HiloTurnos;
@@ -20,8 +21,8 @@ public class LogicaJuego {
 	
 	protected ComponenteGrafico[][] mapa;
 	protected Jugador jugadorDeTurno;
-	protected ComponenteGrafico miJugadorRobot;
-	protected ComponenteGrafico miJugadorTanque;
+	protected Jugador miJugadorRobot;
+	protected Jugador miJugadorTanque;
 	protected ArrayList<ComponenteGrafico> enemigos;
 	
 	private Movimiento hiloEnemigos;
@@ -30,29 +31,30 @@ public class LogicaJuego {
 	
 	private int enemigosMatados=0;
 	private int muertesAcumuladas;
+	protected int proximoJugadorUsuario, proximoJugadorComputadora;
 	
 	private ArrayList<ComponenteGrafico> edificios;
-	private boolean termina;
-	private boolean porQueTermina;
-	private boolean eliminarEnemigo;
-
+	private boolean termina,porQueTermina, ataca, mueve, eliminarEnemigo,turnoComputadora;
 	protected GUI grafica;
 	
 	//Constructor
 	public LogicaJuego(GUI interfaz) {
 		
 		termina=false;
+		ataca = false;
+		mueve = false;
+		turnoComputadora = true;
+		eliminarEnemigo = false;
+		
+		proximoJugadorUsuario = -1;
+		proximoJugadorComputadora = -1;
 		
 		miJugadorRobot = null;
 		miJugadorTanque = null;
 		
-		
-
-		enemigosMatados=0;   //cuando llega a 4 creo un powerUp y lo reseteo
-		muertesAcumuladas=0; //al llegar a 16, fin del juego con victoria
+		muertesAcumuladas=0; //al llegar a 3, fin del juego con victoria
 		
 		grafica=interfaz;
-		eliminarEnemigo = false;
 
 		mapa = new ComponenteGrafico[8][8];
 		enemigos = new ArrayList<ComponenteGrafico>();
@@ -66,6 +68,7 @@ public class LogicaJuego {
 		agregarOyentesMouseInicio();
 		
 
+		jugar();
 		//Maneja los turnos
 		//manejoTurnos = new Hiloturnos(this); 
 		//hiloTurnos.start();		
@@ -310,7 +313,7 @@ public class LogicaJuego {
 	 */
 	public void eliminarColicion(int x,int y,Jugador Ejecutor){
 		getComponente(x, y).recibirAtaque(Ejecutor);
-		if(getComponente(x, y).getVida()==0){
+		if(getComponente(x, y).getEnergia()==0){
 			eliminarGrafico(getComponente(x, y));
 			mapa[y][x]=new Piso(x,y,this);
 			agregarGrafico(getComponente(x, y));
@@ -341,7 +344,7 @@ public class LogicaJuego {
 		for(int i=0;i<2;i++) {
 			int celdaAleatoria = r.nextInt(posiblesUbicaciones.size());
 			ComponenteGrafico ubicacion = posiblesUbicaciones.get(celdaAleatoria);
-			ComponenteGrafico e1 = new Escarabajo(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this);
+			ComponenteGrafico e1 = new Escarabajo(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this,new MovimientoRadio(this,4),new AtaqueAdyacentes(this));
 			mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=e1;
 			enemigos.add(e1);
 			posiblesUbicaciones.remove(celdaAleatoria);
@@ -349,7 +352,7 @@ public class LogicaJuego {
 		
 		int celdaAleatoria = r.nextInt(posiblesUbicaciones.size());
 		ComponenteGrafico ubicacion = posiblesUbicaciones.get(celdaAleatoria);
-		ComponenteGrafico a1 = new Avispa(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this);
+		ComponenteGrafico a1 = new Avispa(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this,new MovimientoLibre(this),new AtaqueAdyacentes(this));
 		mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=a1;
 		enemigos.add(a1);
 		posiblesUbicaciones.remove(celdaAleatoria);
@@ -415,7 +418,7 @@ public class LogicaJuego {
 	 * Creo al Robot y lo ingreso al mapa logico
 	 */
 	private void ingresarRobot(int x, int y){
-		miJugadorRobot = new Robot(x,y,this);
+		miJugadorRobot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
 		mapa[miJugadorRobot.getPosicionX()][miJugadorRobot.getPosicionY()] = miJugadorRobot;
 	}
 	
@@ -423,7 +426,7 @@ public class LogicaJuego {
 	 * Creo al Tanque y lo ingreso al mapa logico
 	 */
 	private void ingresarTanque(int x, int y){
-		miJugadorTanque = new Tanque(x,y,this);
+		miJugadorTanque = new Tanque(x,y,this,new MovimientoRadio(this,5),new AtaqueFilaColumna(this));
 		mapa[miJugadorTanque.getPosicionX()][miJugadorTanque.getPosicionY()] = miJugadorTanque;
 	}
 	
@@ -526,7 +529,7 @@ public class LogicaJuego {
 			finalizarJuego(true);
 	}
 	
-	protected ArrayList<ComponenteGrafico> getCeldasAdyacentes(ComponenteGrafico c) {
+	public ArrayList<ComponenteGrafico> getCeldasAdyacentes(ComponenteGrafico c) {
 		int x = c.getPosicionX();
 		int y = c.getPosicionY();
 		ArrayList<ComponenteGrafico> listaAdy = new ArrayList<ComponenteGrafico> ();
@@ -585,4 +588,45 @@ public class LogicaJuego {
 		
 		return listaAdy;
 	}
+
+	public boolean getAtaca() {
+		return ataca;
+	}
+
+	public void setAtaca(boolean ataca) {
+		this.ataca = ataca;
+	}
+
+	public boolean getMueve() {
+		return mueve;
+	}
+
+	public void setMueve(boolean mueve) {
+		this.mueve = mueve;
+	}
+	
+	public int proximoJugador(int actual, int cantLista){
+		return (actual+1) % cantLista;
+	}
+	
+	//setMsjUsuario
+	private void jugar(){
+		
+		while(!finDelJuego()) {
+			
+			if(turnoComputadora) {
+				proximoJugadorComputadora = proximoJugador(proximoJugadorComputadora,enemigos.size());
+				jugadorDeTurno = (Jugador) enemigos.get(proximoJugadorComputadora);
+				
+			}
+			else //Turno Jugador 
+			{
+				
+			}
+			
+		}
+	}	
+	
+	
+	
 }
