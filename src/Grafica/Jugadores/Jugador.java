@@ -14,8 +14,8 @@ public abstract class Jugador extends ComponenteGrafico{
 	protected int velDisparo;
 	
 	public Jugador(int x,int y,Movimiento miMov,Movimiento miAtq){
-		super(x,y);		
-		movimientoPosible=true;
+		super(x,y);
+		
 		puedoPonerJugador = false;
 		energia=10;
 		
@@ -30,27 +30,6 @@ public abstract class Jugador extends ComponenteGrafico{
 	public int getVelocidadDisparo(){
 		return velDisparo;
 	}
-	
-	/**
-	 * Crea un disparo hecho por el Jugador, si lo puede crear, empieza a moverlo;
-	 * sino, elimina el disparo y con quien coliciono
-	 */	
-	public boolean movimientoPosible() {
-		return false;
-	}
-	
-	public boolean movimientoPosibleEnemigo(){
-		return false;
-	}
-	
-	public boolean movimientoPosibleDisparo() {
-		return false;
-	}
-	
-	public boolean mejorar() {
-		return false;
-	}
-	
 	public abstract void atacarTerreno(Terreno t);
 	
 	public abstract void atacarJugador(Jugador j);
@@ -77,6 +56,14 @@ public abstract class Jugador extends ComponenteGrafico{
 
 	public void setDañoEdificios(int dañoEdificios) {
 		this.dañoEdificios = dañoEdificios;
+	}
+	
+	@Override
+	public boolean recibirAtaque(Jugador j) { 
+		energia-=j.getDaño();  
+		if(energia == 0)
+			morir();
+		return true;
 	}
 	
 

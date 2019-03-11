@@ -20,16 +20,11 @@ public class Agua extends Terreno{
 	}
 
 	@Override
-	public void recibirAtaque(Jugador j) {
-		// TODO Auto-generated method stub
-		
-	}
+	public boolean recibirAtaque(Jugador j) { return false; }
 
 	@Override
-	public boolean movimientoPosibleDisparo() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public void morir() {}
+
 
 	
 }

@@ -36,9 +36,8 @@ public class Escarabajo extends Jugador{
 	}
 
 	@Override
-	public void recibirAtaque(Jugador j) {
-		// TODO Auto-generated method stub
-		
+	public void morir() {
+		logica.murioCPU();
 	}
 
 }

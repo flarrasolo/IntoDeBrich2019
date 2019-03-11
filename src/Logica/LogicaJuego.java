@@ -20,16 +20,17 @@ public class LogicaJuego {
 	/*Variables*/
 	
 	protected ComponenteGrafico[][] mapa;
+	protected ArrayList<Jugador> jugadoresUsuario;
+	protected ArrayList<Jugador> enemigos;
 	protected Jugador jugadorDeTurno;
-	protected Jugador miJugadorRobot;
-	protected Jugador miJugadorTanque;
-	protected ArrayList<ComponenteGrafico> enemigos;
 	
 	private Movimiento hiloEnemigos;
 	private HiloTurnos manejoTurnos;
 	private HiloTiempoEspera tiempoEsperaParaFinalizar;
 	
-	private int enemigosMatados=0;
+	private int enemigosMatados;
+	private int	edificiosDestruidos;
+	private int usuariosMuertos;
 	private int muertesAcumuladas;
 	protected int proximoJugadorUsuario, proximoJugadorComputadora;
 	
@@ -49,15 +50,15 @@ public class LogicaJuego {
 		proximoJugadorUsuario = -1;
 		proximoJugadorComputadora = -1;
 		
-		miJugadorRobot = null;
-		miJugadorTanque = null;
-		
-		muertesAcumuladas=0; //al llegar a 3, fin del juego con victoria
+		muertesAcumuladas = 0; //al llegar a 3, fin del juego con victoria
+		edificiosDestruidos = 0;
+		usuariosMuertos = 0;
 		
 		grafica=interfaz;
 
 		mapa = new ComponenteGrafico[8][8];
-		enemigos = new ArrayList<ComponenteGrafico>();
+		enemigos = new ArrayList<Jugador>();
+		jugadoresUsuario = new ArrayList<Jugador>();
 		edificios = new ArrayList<ComponenteGrafico> ();
 		
 		
@@ -66,22 +67,15 @@ public class LogicaJuego {
 		crearYUbicarEnemigos();
 		resaltarLugaresPosibles();
 		agregarOyentesMouseInicio();
-		
 
-		jugar();
+		//jugar();
 		//Maneja los turnos
 		//manejoTurnos = new Hiloturnos(this); 
 		//hiloTurnos.start();		
 		
 	}
-	
-/* ----------------------------------------------------Mapa--------------------------------------------------*/
-	/**
-	 * Repaint a todos los elementos del panel
-	 */
-	private void repintarPanel(){
-		grafica.repaint();
-	}
+
+	/* ----------------------------------------------------Mapa--------------------------------------------------*/
 	
 	/**
 	 * Permite ver el mapa logico
@@ -158,14 +152,14 @@ public class LogicaJuego {
 							//Controlar click en la mitad superior
 							if(ingY <= 3 && comp.getPuedoPonerJugador()) {
 								//Si todavia no agregue el Tanque
-								if(miJugadorTanque == null) {
+								if(jugadoresUsuario.size()==0) {
 									crearTanque(ingX,ingY);
 									grafica.setMsjUsuario("Seleccione la ubicación donde desea ubicar el Robot");
 								}
 								else {
 									crearRobot(ingX,ingY);
-									devolverPisoNormal();
 									grafica.setMsjUsuario("Turno de la Computadora");
+									comenzarJuego();
 								}
 							}
 					}
@@ -185,32 +179,37 @@ public class LogicaJuego {
 				}); 
 	}
 	
-	private void agregarOyentesMouseTurnos() {
+	private void comenzarJuego() {
+		devolverPisoNormal();
+		grafica.repintarPanel();
+		//repintarPanel();
 		for (int i=0;i<8;i++)
 			for (int j=0;j<8;j++)
+				agregarOyenteMouseTurnos(i,j);
+	}
+	/*
+	private void eliminarOyentesInicio() {
+		for (int i=0;i<8;i++)
+			for (int j=0;j<8;j++)
+				mapa[j][i].removeMouseListener(mapa[j][i].getMouseListeners()[0]);
+	} 
+	*/
+	
+	private void agregarOyenteMouseTurnos(int i, int j) {
+		
 				mapa[j][i].addMouseListener(new MouseListener() {
 
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
-						int ingX = comp.getX()/60;
-						int ingY = comp.getY()/60;
+						//int ingX = comp.getX()/60;
+						//int ingY = comp.getY()/60;
 						//System.out.println(ingY+" - "+ingX);
-						
-						
-							//Controlar click en la mitad superior
-							if(ingY <= 3) {
-								//Si todavia no agregue el Tanque
-								if(miJugadorTanque == null) {
-									crearTanque(ingY,ingX);
-									//resaltarLugaresPosibles();
-									grafica.setMsjUsuario("Seleccione la ubicación donde desea ubicar el Robot");
-								}
-								else {
-									crearRobot(ingY,ingX);
-									grafica.setMsjUsuario("Turno de la Computadora");
-								}
-							}
+						if(ataca)
+							atacar(comp);
+						else
+							if(mueve)
+								mover(comp);
 					}
 
 					@Override
@@ -288,12 +287,14 @@ public class LogicaJuego {
 	 * @param x indica si se gano (true) o perdio (false)
 	 */
 	public void finalizarJuego(boolean x){
-		termina=true;
+		termina=true; 
 		porQueTermina=x;
+		
 		//Matar Hilo de Turnos
 		//manejoTurnos.stop();
-		tiempoEsperaParaFinalizar=new HiloTiempoEspera(this);
-		tiempoEsperaParaFinalizar.start();
+		//tiempoEsperaParaFinalizar=new HiloTiempoEspera(this);
+		//tiempoEsperaParaFinalizar.start();
+		
 	}
 	
 	/**
@@ -330,7 +331,7 @@ public class LogicaJuego {
 	}	
 	
 	public void actualizarPanel(){
-		this.repintarPanel();
+		grafica.repintarPanel();
 	}
 	
 	/**
@@ -344,7 +345,7 @@ public class LogicaJuego {
 		for(int i=0;i<2;i++) {
 			int celdaAleatoria = r.nextInt(posiblesUbicaciones.size());
 			ComponenteGrafico ubicacion = posiblesUbicaciones.get(celdaAleatoria);
-			ComponenteGrafico e1 = new Escarabajo(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this,new MovimientoRadio(this,4),new AtaqueAdyacentes(this));
+			Jugador e1 = new Escarabajo(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this,new MovimientoRadio(this,4),new AtaqueAdyacentes(this));
 			mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=e1;
 			enemigos.add(e1);
 			posiblesUbicaciones.remove(celdaAleatoria);
@@ -352,7 +353,7 @@ public class LogicaJuego {
 		
 		int celdaAleatoria = r.nextInt(posiblesUbicaciones.size());
 		ComponenteGrafico ubicacion = posiblesUbicaciones.get(celdaAleatoria);
-		ComponenteGrafico a1 = new Avispa(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this,new MovimientoLibre(this),new AtaqueAdyacentes(this));
+		Jugador a1 = new Avispa(ubicacion.getPosicionX(),ubicacion.getPosicionY(),this,new MovimientoLibre(this),new AtaqueAdyacentes(this));
 		mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=a1;
 		enemigos.add(a1);
 		posiblesUbicaciones.remove(celdaAleatoria);
@@ -376,58 +377,96 @@ public class LogicaJuego {
 	
 	private void resaltarLugaresPosibles() {
 		ArrayList<ComponenteGrafico> posiblesUbicaciones = getPosiblesUbicaciones(0,4,8);
+		/*
 			for(int x=0;x<posiblesUbicaciones.size();x++) {
 				ComponenteGrafico celda = posiblesUbicaciones.get(x);
-				setComponente(new PisoResaltado(celda.getPosicionX(),celda.getPosicionY(),this));
-			}
+				*/
+				//setComponente(new PisoResaltado(celda.getPosicionX(),celda.getPosicionY(),this));
+			for(ComponenteGrafico celda : posiblesUbicaciones)
+				celda.setImagen("/Imagenes/fondoResaltado.png");
+			//}
 	}
 	
 	private void devolverPisoNormal() {
+		/*
 		ArrayList<ComponenteGrafico> posiblesUbicaciones = getPosiblesUbicaciones(0,4,8);
 		for(int x=0;x<posiblesUbicaciones.size();x++) {
 			ComponenteGrafico celda = posiblesUbicaciones.get(x);
 			setComponente(new Piso(celda.getPosicionX(),celda.getPosicionY(),this));
 		}
-	}
+		*/
+		ArrayList<ComponenteGrafico> posiblesUbicaciones = getPosiblesUbicaciones(0,4,8);
+		/*
+		for(int x=0;x<posiblesUbicaciones.size();x++) {
+			ComponenteGrafico celda = posiblesUbicaciones.get(x);
+			*/
+			for(ComponenteGrafico celda : posiblesUbicaciones)
+				celda.setImagen("/Imagenes/fondo.png");
+		//}
 		
+	}
+	
+	private void atacar(ComponenteGrafico celda) {
+		Movimiento ataque = jugadorDeTurno.getMiAtaque();
+		ArrayList<ComponenteGrafico> atacables = ataque.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+		
+		if(atacables.contains(celda))
+			celda.recibirAtaque(jugadorDeTurno);
+		
+	}
+	
+	private void mover(ComponenteGrafico celda) {
+		Movimiento movimiento = jugadorDeTurno.getMiMovimiento();
+		ArrayList<ComponenteGrafico> movibles = movimiento.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+		
+		if(movibles.contains(celda))
+			moverJugador(celda);;
+	}
+	
 	/*------------------------------------------Jugador-------------------------------------------- */
 	
 	/**
 	 * @return Robot
 	 */
-	public ComponenteGrafico getJugadorRobot(){
-		return miJugadorRobot;
+	public Jugador getJugadorActual(){
+		return jugadoresUsuario.get(proximoJugadorUsuario);
 	}
 	
 	/**
-	 * @return Tanque
+	 * Mueve al jugador sea del Tanque o Robot a la celda indicada
+	 * @param celda a la que pretende moverse el jugador de turno
 	 */
-	public ComponenteGrafico getJugadorTanque(){
-		return miJugadorTanque;
-	}
-	
-	/**
-	 * Mueve al jugador sea del Tanque o Robot en la direccion inducada
-	 * @param direccion a la que se desea mover
-	 */
-	public void moverJugador(int direccion){
-		jugadorDeTurno.mover(direccion);
+	public void moverJugador(ComponenteGrafico celda){
+		int movX = celda.getX()/60;
+		int movY = celda.getY()/60;
+		
+		//jugadoresUsuario.get(proximoJugadorUsuario).mover(direccion);
+		/*
+		 * mover el jugador a la celda
+		 * poner un piso en la celda donde estaba
+		 * agregarle el oyente llamando con x,y a agregarOyenteMouseTurnos
+		*/
+		
+		grafica.eliminarGrafico(getComponente(movX,movY));
+    	grafica.agregarGrafico(jugadoresUsuario.get(1));
 	}
 	
 	/**
 	 * Creo al Robot y lo ingreso al mapa logico
 	 */
 	private void ingresarRobot(int x, int y){
-		miJugadorRobot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
-		mapa[miJugadorRobot.getPosicionX()][miJugadorRobot.getPosicionY()] = miJugadorRobot;
+		Jugador robot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
+		mapa[robot.getPosicionX()][robot.getPosicionY()] = robot;
+		jugadoresUsuario.add(robot);
 	}
 	
 	/**
 	 * Creo al Tanque y lo ingreso al mapa logico
 	 */
 	private void ingresarTanque(int x, int y){
-		miJugadorTanque = new Tanque(x,y,this,new MovimientoRadio(this,5),new AtaqueFilaColumna(this));
-		mapa[miJugadorTanque.getPosicionX()][miJugadorTanque.getPosicionY()] = miJugadorTanque;
+		Jugador tanque = new Tanque(x,y,this,new MovimientoRadio(this,5),new AtaqueFilaColumna(this));
+		mapa[tanque.getPosicionX()][tanque.getPosicionY()] = tanque;
+		jugadoresUsuario.add(tanque);
 	}
 	
 	/**
@@ -436,7 +475,7 @@ public class LogicaJuego {
 	public void crearRobot(int x, int y){
     	ingresarRobot(x,y);
     	grafica.eliminarGrafico(getComponente(x,y));
-    	grafica.agregarGrafico(getJugadorRobot());
+    	grafica.agregarGrafico(jugadoresUsuario.get(1));
     }
 	
 	/**
@@ -445,7 +484,7 @@ public class LogicaJuego {
 	public void crearTanque(int x, int y){
     	ingresarTanque(x,y);
     	grafica.eliminarGrafico(getComponente(x,y));
-    	grafica.agregarGrafico(getJugadorTanque());
+    	grafica.agregarGrafico(jugadoresUsuario.get(0));
     }
 	
 	public boolean fallaAtaque() {
@@ -470,13 +509,14 @@ public class LogicaJuego {
 		
 		//Guardo en una Lista todas las celdas adyacentes a los objetivos a destriuir para CPU
 		ArrayList<ComponenteGrafico> adyacentesDeObjetivos = new ArrayList<ComponenteGrafico> ();
-
-		for (ComponenteGrafico c : this.getCeldasAdyacentes(miJugadorTanque))
-			if(!adyacentesDeObjetivos.contains(c))
-				adyacentesDeObjetivos.add(c);
-		for (ComponenteGrafico c : this.getCeldasAdyacentes(miJugadorRobot))
-			if(!adyacentesDeObjetivos.contains(c))
-				adyacentesDeObjetivos.add(c);
+		
+			for (ComponenteGrafico c : this.getCeldasAdyacentes(jugadoresUsuario.get(1)))
+				if(!adyacentesDeObjetivos.contains(c))
+					adyacentesDeObjetivos.add(c);
+			if(jugadoresUsuario.size() == 2)
+				for (ComponenteGrafico c : this.getCeldasAdyacentes(jugadoresUsuario.get(2)))
+					if(!adyacentesDeObjetivos.contains(c))
+						adyacentesDeObjetivos.add(c);
 		for (ComponenteGrafico c : edificios)
 			for(ComponenteGrafico comp : this.getCeldasAdyacentes(c)) {
 				if(!adyacentesDeObjetivos.contains(comp))
@@ -496,6 +536,11 @@ public class LogicaJuego {
 				posiblesMovInteligentes.add(comp);
 
 		return posiblesMovInteligentes;
+	}
+	
+	public ArrayList<ComponenteGrafico> inteligenciaAtaqueEnemigos(){
+		ArrayList<ComponenteGrafico> posiblesAtqInteligentes = new ArrayList<ComponenteGrafico> ();
+		return posiblesAtqInteligentes;
 	}
 	
 	
@@ -523,11 +568,24 @@ public class LogicaJuego {
 	/**
 	 * Si se murio el tercer y ultimo enemigo, finaliza el juego con victoria para el usuario
 	 */
-	public void enemigoMurio(){
+	public void murioCPU(){
 		muertesAcumuladas++;
 		if(muertesAcumuladas == 3)
 			finalizarJuego(true);
 	}
+	
+	public void murioUsuario() {
+		usuariosMuertos++;
+		if(usuariosMuertos == 2)
+			finalizarJuego(false);
+	}
+	
+	public void edificioDestruido() {
+		edificiosDestruidos++;
+		if(edificiosDestruidos == 4)
+			finalizarJuego(false);
+	}
+	
 	
 	public ArrayList<ComponenteGrafico> getCeldasAdyacentes(ComponenteGrafico c) {
 		int x = c.getPosicionX();
@@ -610,20 +668,27 @@ public class LogicaJuego {
 	}
 	
 	//setMsjUsuario
+	
 	private void jugar(){
 		
-		while(!finDelJuego()) {
+		while(!termina) {
 			
 			if(turnoComputadora) {
 				proximoJugadorComputadora = proximoJugador(proximoJugadorComputadora,enemigos.size());
-				jugadorDeTurno = (Jugador) enemigos.get(proximoJugadorComputadora);
+				jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
 				
+				
+				
+				//Fin del turno de la Computadora
+				grafica.reestablecerBotones();
+				grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
 			}
 			else //Turno Jugador 
 			{
 				
 			}
 			
+		ataca = mueve = false;
 		}
 	}	
 	

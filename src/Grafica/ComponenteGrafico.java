@@ -1,5 +1,9 @@
 package Grafica;
 
+import java.awt.Image;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import Grafica.Jugadores.Jugador;
@@ -21,8 +25,6 @@ public abstract class ComponenteGrafico extends JLabel {
 	protected int energia;
 	
 	protected boolean puedoPonerJugador;
-	protected boolean movimientoPosible;
-	protected boolean movimientoPosibleDisparo;
 	
 	protected LogicaJuego logica;
 	
@@ -57,19 +59,20 @@ public abstract class ComponenteGrafico extends JLabel {
 		pixelY=y;
 	}
 	
-	public void setMovimientoPosible(boolean x){
-		movimientoPosible=x;
-	}
-	
 	public void setDireccion(int d){}
 		
 	public void posicionImagen(int i){}
-
-	public void mover(int direccion){}
 			
 	public void puedeMover(){}
 	
-	public abstract void recibirAtaque(Jugador j);
+	public abstract void morir();
+	
+	/**
+	 * Recibe el ataque del jugador de turno.
+	 * @param j
+	 * @return Verdadero si recibio daño (o sea es una componente grafica dañable), falso caso contrario
+	 */
+	public abstract boolean recibirAtaque(Jugador j);
 	/*--------------------------------------------Consultas------------------------------------------------------*/
 	
 	public int getDireccion(){
@@ -117,11 +120,10 @@ public abstract class ComponenteGrafico extends JLabel {
 		return false;
 	}
 	
-	public abstract boolean movimientoPosible();
-	
-	public abstract boolean movimientoPosibleDisparo();
-	
-	public abstract boolean movimientoPosibleEnemigo();
-
+	public void setImagen(String nombre) {
+		ImageIcon fot = new ImageIcon(getClass().getResource(nombre));
+		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
+		this.setIcon(icono);
+	}
 	
 }

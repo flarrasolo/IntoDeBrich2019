@@ -28,8 +28,13 @@ public class Edificio extends Terreno{
 	}
 
 	@Override
-	public void recibirAtaque(Jugador j) {
+	public boolean recibirAtaque(Jugador j) {
 		energia -=j.getDañoEdificios();
-		
+		if(energia == 0)
+			morir();
+		return true;
 	}
+
+	@Override
+	public void morir() { logica.edificioDestruido(); }
 }

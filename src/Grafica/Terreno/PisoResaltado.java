@@ -16,17 +16,8 @@ public class PisoResaltado extends Terreno{
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/fondoResaltado.png"));
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
-		movimientoPosible=false;
 		puedoPonerJugador = true;
 		energia=1;
-	}
-	
-	public boolean movimientoPosible() {
-		return movimientoPosible;
-	}
-	
-	public boolean movimientoPosibleEnemigo(){
-		return movimientoPosible;
 	}
 	
 	public boolean movimientoPosibleDisparo() {
@@ -36,9 +27,9 @@ public class PisoResaltado extends Terreno{
 	public void colicion(ComponenteGrafico x) {}
 
 	@Override
-	public void recibirAtaque(Jugador e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public boolean recibirAtaque(Jugador e) { return false; }
+
+	@Override
+	public void morir() {}
 
 }

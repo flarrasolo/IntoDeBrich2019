@@ -11,43 +11,30 @@ import Grafica.Terreno.Terreno;
 import Logica.LogicaJuego;
 
 public class Tanque extends Jugador{
-	private int movimientosRestantes;
+
 	public Tanque(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
 		super(x,y,movimiento,ataque);
 		profundidad=2;
-		movimientosRestantes = 5;
+		/*
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/tanque.png"));
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
+		*/
+		setImagen("/Imagenes/tanque.png");
+		puedoPonerJugador = false;
+		daño = 1;
+		dañoEdificios = 0;
 	}
-
-	public int getMovimientosRestantes() {
-		return movimientosRestantes;
-	}
-	
-	public void setMovimientosRestantes(int mov) {
-		movimientosRestantes = mov;
-	}
-
 
 	@Override
-	public void atacarTerreno(Terreno t) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void atacarTerreno(Terreno t) {}
 
 	@Override
-	public void atacarJugador(Jugador j) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void atacarJugador(Jugador j) { j.recibirAtaque(this);}
 
 	@Override
-	public void recibirAtaque(Jugador j) {
-		// TODO Auto-generated method stub
-		
+	public void morir() {
+		logica.murioUsuario();		
 	}
 
 }

@@ -35,8 +35,8 @@ public class Avispa extends Jugador{
 	}
 
 	@Override
-	public void recibirAtaque(Jugador j) {
-		energia-=j.getDaño();
+	public void morir() {
+		logica.murioCPU();
 	}
 	
 

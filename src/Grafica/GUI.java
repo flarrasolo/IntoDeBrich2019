@@ -42,7 +42,7 @@ public class GUI extends JFrame{
 	    	mapaLogica = new LogicaJuego(this);
 	    	
 	        //seteo inicial
-	        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	        this.setTitle("IntoDeBrich 2019");
 	        this.setResizable(false);
 	        
@@ -74,18 +74,23 @@ public class GUI extends JFrame{
 			opcA.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					mapaLogica.setMueve(true);
+					opcA.setEnabled(false);
 				}
 			});
 			opcA.setBounds(68, 531, 89, 23);
+			opcA.setEnabled(false);
 			contentPane.add(opcA,new Integer(2));
 			
-			JButton opcB = new JButton("Atacar");
+			opcB = new JButton("Atacar");
 			opcB.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					mapaLogica.setAtaca(true);
+					opcA.setEnabled(false);
+					opcB.setEnabled(false);
 				}
 			});
 			opcB.setBounds(300, 531, 89, 23);
+			opcB.setEnabled(false);
 			contentPane.add(opcB,new Integer(2));
 			
 			msjUsuario = new JLabel("Seleccione la ubicación donde desea ubicar el Tanque");
@@ -102,7 +107,7 @@ public class GUI extends JFrame{
 	        setVisible(true);
 	        
 	       	        
-}
+	 }
 	 
 	 /**
 	  * Launch the application.
@@ -162,7 +167,24 @@ public class GUI extends JFrame{
 		contentPane.repaint();
 	 }
 	 
+	 public void repintarPanel() {
+		 contentPane.repaint();
+	 }
+	 
 	 public void setMsjUsuario(String msj) {
 		 msjUsuario.setText(msj);
+	 }
+
+	 public void setMover(boolean puedeMover) {
+		 opcA.setEnabled(puedeMover);
+	 }
+	 
+	 public void setAtacar(boolean puedeAtacar) {
+		 opcB.setEnabled(puedeAtacar);
+	 }
+	 
+	 public void reestablecerBotones() {
+		 opcA.setEnabled(true);
+		 opcB.setEnabled(true);
 	 }
 }

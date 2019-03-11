@@ -24,10 +24,10 @@ public class Montaña extends Terreno{
 	}
 
 	@Override
-	public void recibirAtaque(Jugador j) {
-		// TODO Auto-generated method stub
-		
-	}
+	public boolean recibirAtaque(Jugador j) { return false; }
+
+	@Override
+	public void morir() {	}
 
 
 	

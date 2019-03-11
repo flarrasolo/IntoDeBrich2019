@@ -29,10 +29,7 @@ public class Tierra extends Terreno{
 	}
 
 	@Override
-	public void recibirAtaque(Jugador j) {
-		// TODO Auto-generated method stub
-		
-	}
+	public boolean recibirAtaque(Jugador j) { return false; }
 		
 	public boolean destruido() {
 		boolean resultado = false;
@@ -42,5 +39,8 @@ public class Tierra extends Terreno{
 		}
 		return resultado;
 	}
+
+	@Override
+	public void morir() {}
 	
 }
