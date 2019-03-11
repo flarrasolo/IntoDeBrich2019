@@ -100,12 +100,8 @@ public class GUI extends JFrame{
 			
 			
 			mapaLogica.generarPanel();			
-					
-			
-	        //mapaLogica.crearJugador();
 	        
 	        setVisible(true);
-	        
 	       	        
 	 }
 	 

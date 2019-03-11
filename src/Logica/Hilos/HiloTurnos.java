@@ -38,17 +38,76 @@ public class HiloTurnos extends Thread{
 	 * Corre un turno de jugador o computadora mientras no sea fin del juego
 	 */
 	public void run() {
-		
+		/*
 		while(!miLogica.finDelJuego()) {
 			
+			//miLogica.actualizarPanel();
+			miLogica.actualizarPanel();
+			
+			//TURNO DE LA COMPUTADORA
 			if(turnoComputadora) {
-				
+				HiloTiempoEspera espera = new HiloTiempoEspera(miLogica,1);
+				espera.run();
+				//Corro el indice de la lista de Enemigos al que le toca
+				proximoJugadorComputadora = proximoJugador(proximoJugadorComputadora,enemigos.size());
+				//Obtengo el jugador (Avispa o uno de los Escarabajos)
+				jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
+					
+				while(!atacoCPU) {
+					//Si puede atacar, ataca. Sino intenta mover a posicion de ataque
+					ArrayList<ComponenteGrafico> ataquesPosibles = this.inteligenciaAtaqueEnemigos();
+						if(!ataquesPosibles.isEmpty()) {
+							i = r.nextInt(ataquesPosibles.size());
+							ComponenteGrafico celdaAtaque = ataquesPosibles.get(i);
+							jugadorDeTurno.atacar(celdaAtaque);
+							System.out.println("Ataque CPU");
+							atacoCPU = true;
+						}
+						else { //mueve
+							ArrayList<ComponenteGrafico> movimientosPosibles = this.inteligenciaMovimientoEnemigos();
+							if(!movimientosPosibles.isEmpty()) {
+								i = r.nextInt(movimientosPosibles.size());
+								ComponenteGrafico celdaDestino = movimientosPosibles.get(i);
+								this.moverJugador(celdaDestino);
+								System.out.println("Movio CPU");
+							}
+						}
+				}
+				//Fin del turno de la Computadora
+				atacoCPU = false;
+				grafica.reestablecerBotones();
+				grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
 			}
-			else //Turno Jugador 
-			{
+			else //TURNO DEL USUARIO
+			{	
+				//Corro el indice de la lista de Jugadores al que le toca
+				proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
+				//Obtengo el jugador (Tanque o Robot)
+				jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
 				
+				
+				
+				//Fin del turno del Usuario
+				atacar = mover = false;
 			}
 			
+			//Si acaba de terminar el turno de la computadora, le toca al Usuario. Sino al revés
+			if(turnoComputadora) 
+				turnoComputadora = false;
+			else
+				turnoComputadora = true;
+		
+			miLogica.actualizarPanel();
+		*/
+		}
+		
+		
+		
+		
+		
+		
+		//POSIBLE ALGORITMO?
+		
 		//ResaltarJugador?
 		//Elegir MoverAtacar (Botón en GUI->settear atributo acá en base a lo elegido)
 		//DeshabilitarBotones
@@ -67,8 +126,4 @@ public class HiloTurnos extends Thread{
 		//Fin del turno.
 		
 		
-		
-		}
-		
-	}
 }

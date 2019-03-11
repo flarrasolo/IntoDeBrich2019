@@ -152,10 +152,12 @@ public class LogicaJuego {
 								//Si todavia no agregue el Tanque
 								if(jugadoresUsuario.size()==0) {
 									crearTanque(ingX,ingY);
+									System.out.println("Seleccione la ubicación donde desea ubicar el Robot");
 									grafica.setMsjUsuario("Seleccione la ubicación donde desea ubicar el Robot");
 								}
 								else {
 									crearRobot(ingX,ingY);
+									System.out.println("Turno de la Computadora");
 									grafica.setMsjUsuario("Turno de la Computadora");
 									comenzarJuego();
 								}
@@ -205,11 +207,15 @@ public class LogicaJuego {
 					public void mouseClicked(MouseEvent e) {
 						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
 						
-						if(ataca)
+						if(ataca) {
 							atacar(comp);
+							System.out.println("Ataque ("+i+" , )"+j);
+						}
 						else
-							if(mueve)
+							if(mueve) {
 								mover(comp);
+								System.out.println("Movimiento ("+i+" , )"+j);
+							}
 					}
 
 					@Override
@@ -289,12 +295,11 @@ public class LogicaJuego {
 	public void finalizarJuego(boolean x){
 		termina=true; 
 		porQueTermina=x;
-		
 		//Matar Hilo de Turnos
 		//manejoTurnos.stop();
-		//tiempoEsperaParaFinalizar=new HiloTiempoEspera(this);
-		//tiempoEsperaParaFinalizar.start();
-		
+		HiloTiempoEspera tiempoEsperaParaFinalizar=new HiloTiempoEspera(this,2);
+		tiempoEsperaParaFinalizar.start();
+		this.finalizar();
 	}
 	
 	/**
@@ -597,6 +602,9 @@ public class LogicaJuego {
 			finalizarJuego(true);
 	}
 	
+	/**
+	 * Si se murio el segundo y ultimo usuario, finaliza el juego con victoria para la computadora
+	 */
 	public void murioUsuario(Jugador morirme) {
 		jugadoresUsuario.remove(morirme);
 		usuariosMuertos++;
@@ -604,6 +612,10 @@ public class LogicaJuego {
 			finalizarJuego(false);
 	}
 	
+
+	/**
+	 * Si se destruyo el cuarto edificio, finaliza el juego con victoria para la computadora
+	 */
 	public void edificioDestruido(ComponenteGrafico destruirme) {
 		edificios.remove(destruirme);
 		edificiosDestruidos++;
@@ -692,14 +704,18 @@ public class LogicaJuego {
 		return (actual+1) % cantLista;
 	}
 	
-	//setMsjUsuario
-	
+	//Adaptar con Hilos
 	private void jugar(){
 		Random r = new Random(); boolean atacoCPU = false; int i;
 		
 		while(!termina) {
 			
+			grafica.repintarPanel();
+			
+			//TURNO DE LA COMPUTADORA
 			if(turnoComputadora) {
+				HiloTiempoEspera espera = new HiloTiempoEspera(this,1);
+				espera.run();
 				//Corro el indice de la lista de Enemigos al que le toca
 				proximoJugadorComputadora = proximoJugador(proximoJugadorComputadora,enemigos.size());
 				//Obtengo el jugador (Avispa o uno de los Escarabajos)
@@ -712,7 +728,7 @@ public class LogicaJuego {
 							i = r.nextInt(ataquesPosibles.size());
 							ComponenteGrafico celdaAtaque = ataquesPosibles.get(i);
 							jugadorDeTurno.atacar(celdaAtaque);
-							
+							System.out.println("Ataque CPU");
 							atacoCPU = true;
 						}
 						else { //mueve
@@ -721,6 +737,7 @@ public class LogicaJuego {
 								i = r.nextInt(movimientosPosibles.size());
 								ComponenteGrafico celdaDestino = movimientosPosibles.get(i);
 								this.moverJugador(celdaDestino);
+								System.out.println("Movio CPU");
 							}
 						}
 				}
@@ -729,20 +746,39 @@ public class LogicaJuego {
 				grafica.reestablecerBotones();
 				grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
 			}
-			else //Turno Jugador 
+			else //TURNO DEL USUARIO
 			{	
+				//grafica.reestablecerBotones();
+				grafica.setMover(true);
+				grafica.setAtacar(true);
+				grafica.repintarPanel();
 				//Corro el indice de la lista de Jugadores al que le toca
 				proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
 				//Obtengo el jugador (Tanque o Robot)
 				jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
 				
+				//ESPERAR POR OPCION
+				while(ataca == false && mueve == false) {
+					HiloTiempoEspera espera = new HiloTiempoEspera(this,10);
+					espera.run();
+				}
+					//if(ataca == true)
+						//espera.stop();
 				
-				//?????????????????????????????????????????????????????????????
+				/*
+				while(ataca == false || mueve == false) {
+					HiloTiempoEspera espera = new HiloTiempoEspera(this,2);
+					espera.run();
+					if(ataca == true)
+						espera.stop();
+						//break;
+				}*/
 				
 				
 				
 				//Fin del turno del Usuario
 				ataca = mueve = false;
+				grafica.repintarPanel();
 			}
 			
 			//Si acaba de terminar el turno de la computadora, le toca al Usuario. Sino al revés
@@ -750,8 +786,11 @@ public class LogicaJuego {
 				turnoComputadora = false;
 			else
 				turnoComputadora = true;
-			
+		
+			grafica.repintarPanel();
 		}
+		
+		//FIN DEL JUEGO
 	}	
 	
 	

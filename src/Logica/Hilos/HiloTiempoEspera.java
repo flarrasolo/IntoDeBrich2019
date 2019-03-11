@@ -11,14 +11,9 @@ public class HiloTiempoEspera extends Thread{
 	protected int tiempo;
 	protected LogicaJuego miLogica;
 	
-	public	HiloTiempoEspera(int i){
-		try {
-			sleep(i);
-		} catch (InterruptedException e) {e.printStackTrace();}
-	}
-	
-	public HiloTiempoEspera(LogicaJuego l){
+	public HiloTiempoEspera(LogicaJuego l, int t){
 		miLogica=l;
+		tiempo = t;
 	}
 	
 	/**
@@ -27,8 +22,8 @@ public class HiloTiempoEspera extends Thread{
 	public void run()
 	{
 		try{
-			sleep(200);
-			miLogica.finalizar();
+			sleep(1000*tiempo);
+			//miLogica.finalizar();
 		}catch(InterruptedException e){ e.printStackTrace();}
 		stop();
 	}
