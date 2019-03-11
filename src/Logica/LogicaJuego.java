@@ -20,21 +20,19 @@ public class LogicaJuego {
 	/*Variables*/
 	
 	protected ComponenteGrafico[][] mapa;
+	
 	protected ArrayList<Jugador> jugadoresUsuario;
 	protected ArrayList<Jugador> enemigos;
+	protected ArrayList<ComponenteGrafico> edificios;
+	
 	protected Jugador jugadorDeTurno;
 	
 	private Movimiento hiloEnemigos;
 	private HiloTurnos manejoTurnos;
 	private HiloTiempoEspera tiempoEsperaParaFinalizar;
 	
-	private int enemigosMatados;
-	private int	edificiosDestruidos;
-	private int usuariosMuertos;
-	private int muertesAcumuladas;
-	protected int proximoJugadorUsuario, proximoJugadorComputadora;
+	private int enemigosMatados,edificiosDestruidos,usuariosMuertos,muertesAcumuladas,proximoJugadorUsuario, proximoJugadorComputadora;
 	
-	private ArrayList<ComponenteGrafico> edificios;
 	private boolean termina,porQueTermina, ataca, mueve, eliminarEnemigo,turnoComputadora;
 	protected GUI grafica;
 	
@@ -184,10 +182,12 @@ public class LogicaJuego {
 		grafica.repintarPanel();
 		//repintarPanel();
 		
-		//Toda celda es "clickeable"
+		//Toda celda es "clickeable", solamente va a haber accion si es una accion posible, sino no pasa nada
 		for (int i=0;i<8;i++)
 			for (int j=0;j<8;j++)
 				agregarOyenteMouseTurnos(i,j);
+		
+		jugar();
 	}
 	/*
 	private void eliminarOyentesInicio() {
@@ -204,9 +204,7 @@ public class LogicaJuego {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
-						//int ingX = comp.getX()/60;
-						//int ingY = comp.getY()/60;
-
+						
 						if(ataca)
 							atacar(comp);
 						else
@@ -455,7 +453,7 @@ public class LogicaJuego {
 		
 		grafica.eliminarGrafico(getComponente(movX,movY));
 		jugadorDeTurno.setPosicionX(movX);
-    	jugadorDeTurno.setPosicionX(movY);
+    	jugadorDeTurno.setPosicionY(movY);
     	this.setComponente(jugadorDeTurno);
     	grafica.agregarGrafico(jugadoresUsuario.get(1));
     	
@@ -526,11 +524,11 @@ public class LogicaJuego {
 		//Guardo en una Lista todas las celdas adyacentes a los objetivos a destriuir para CPU
 		ArrayList<ComponenteGrafico> adyacentesDeObjetivos = new ArrayList<ComponenteGrafico> ();
 		
-			for (ComponenteGrafico c : this.getCeldasAdyacentes(jugadoresUsuario.get(1)))
+			for (ComponenteGrafico c : this.getCeldasAdyacentes(jugadoresUsuario.get(0)))
 				if(!adyacentesDeObjetivos.contains(c))
 					adyacentesDeObjetivos.add(c);
 			if(jugadoresUsuario.size() == 2)
-				for (ComponenteGrafico c : this.getCeldasAdyacentes(jugadoresUsuario.get(2)))
+				for (ComponenteGrafico c : this.getCeldasAdyacentes(jugadoresUsuario.get(1)))
 					if(!adyacentesDeObjetivos.contains(c))
 						adyacentesDeObjetivos.add(c);
 		for (ComponenteGrafico c : edificios)
@@ -592,19 +590,22 @@ public class LogicaJuego {
 	/**
 	 * Si se murio el tercer y ultimo enemigo, finaliza el juego con victoria para el usuario
 	 */
-	public void murioCPU(){
+	public void murioCPU(Jugador morirme){
+		enemigos.remove(morirme);
 		muertesAcumuladas++;
 		if(muertesAcumuladas == 3)
 			finalizarJuego(true);
 	}
 	
-	public void murioUsuario() {
+	public void murioUsuario(Jugador morirme) {
+		jugadoresUsuario.remove(morirme);
 		usuariosMuertos++;
 		if(usuariosMuertos == 2)
 			finalizarJuego(false);
 	}
 	
-	public void edificioDestruido() {
+	public void edificioDestruido(ComponenteGrafico destruirme) {
+		edificios.remove(destruirme);
 		edificiosDestruidos++;
 		if(edificiosDestruidos == 4)
 			finalizarJuego(false);
@@ -699,7 +700,9 @@ public class LogicaJuego {
 		while(!termina) {
 			
 			if(turnoComputadora) {
+				//Corro el indice de la lista de Enemigos al que le toca
 				proximoJugadorComputadora = proximoJugador(proximoJugadorComputadora,enemigos.size());
+				//Obtengo el jugador (Avispa o uno de los Escarabajos)
 				jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
 					
 				while(!atacoCPU) {
@@ -722,18 +725,32 @@ public class LogicaJuego {
 						}
 				}
 				//Fin del turno de la Computadora
+				atacoCPU = false;
 				grafica.reestablecerBotones();
 				grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
 			}
 			else //Turno Jugador 
-			{
+			{	
+				//Corro el indice de la lista de Jugadores al que le toca
 				proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
+				//Obtengo el jugador (Tanque o Robot)
 				jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
+				
+				
+				//?????????????????????????????????????????????????????????????
+				
+				
 				
 				//Fin del turno del Usuario
 				ataca = mueve = false;
 			}
-		
+			
+			//Si acaba de terminar el turno de la computadora, le toca al Usuario. Sino al revés
+			if(turnoComputadora) 
+				turnoComputadora = false;
+			else
+				turnoComputadora = true;
+			
 		}
 	}	
 	

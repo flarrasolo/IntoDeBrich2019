@@ -49,6 +49,9 @@ public abstract class Jugador extends ComponenteGrafico{
 		this.dañoEdificios = dañoEdificios;
 	}
 	
+	/**
+	 * Retorna true si el Jugador recibio el daño
+	 */
 	@Override
 	public boolean recibirAtaque(Jugador j) { 
 		energia-=j.getDaño();  

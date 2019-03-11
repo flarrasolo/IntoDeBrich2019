@@ -31,7 +31,7 @@ public class Escarabajo extends Jugador{
 
 	@Override
 	public void morir() {
-		logica.murioCPU();
+		logica.murioCPU(this);
 	}
 
 }

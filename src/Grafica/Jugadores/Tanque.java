@@ -34,7 +34,7 @@ public class Tanque extends Jugador{
 
 	@Override
 	public void morir() {
-		logica.murioUsuario();		
+		logica.murioUsuario(this);		
 	}
 
 }

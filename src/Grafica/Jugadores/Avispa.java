@@ -31,7 +31,7 @@ public class Avispa extends Jugador{
 
 	@Override
 	public void morir() {
-		logica.murioCPU();
+		logica.murioCPU(this);
 	}
 	
 

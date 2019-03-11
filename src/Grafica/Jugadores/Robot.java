@@ -34,7 +34,7 @@ public class Robot extends Jugador{
 
 	@Override
 	public void morir() {
-		logica.murioUsuario();
+		logica.murioUsuario(this);
 	}
 
 	

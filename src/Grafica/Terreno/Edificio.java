@@ -36,5 +36,5 @@ public class Edificio extends Terreno{
 	}
 
 	@Override
-	public void morir() { logica.edificioDestruido(); }
+	public void morir() { logica.edificioDestruido(this); }
 }
