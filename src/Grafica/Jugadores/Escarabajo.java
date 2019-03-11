@@ -24,14 +24,8 @@ public class Escarabajo extends Jugador{
 	}
 
 	@Override
-	public void atacarTerreno(Terreno t) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void atacarJugador(Jugador j) {
-		// TODO Auto-generated method stub
+	public void atacar(ComponenteGrafico celda) {
+		celda.recibirAtaque(this);
 		
 	}
 

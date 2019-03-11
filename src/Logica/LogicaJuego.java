@@ -183,6 +183,8 @@ public class LogicaJuego {
 		devolverPisoNormal();
 		grafica.repintarPanel();
 		//repintarPanel();
+		
+		//Toda celda es "clickeable"
 		for (int i=0;i<8;i++)
 			for (int j=0;j<8;j++)
 				agregarOyenteMouseTurnos(i,j);
@@ -204,7 +206,7 @@ public class LogicaJuego {
 						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
 						//int ingX = comp.getX()/60;
 						//int ingY = comp.getY()/60;
-						//System.out.println(ingY+" - "+ingX);
+
 						if(ataca)
 							atacar(comp);
 						else
@@ -420,7 +422,7 @@ public class LogicaJuego {
 		ArrayList<ComponenteGrafico> movibles = movimiento.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
 		
 		if(movibles.contains(celda))
-			moverJugador(celda);;
+			moverJugador(celda);
 	}
 	
 	/*------------------------------------------Jugador-------------------------------------------- */
@@ -436,19 +438,33 @@ public class LogicaJuego {
 	 * Mueve al jugador sea del Tanque o Robot a la celda indicada
 	 * @param celda a la que pretende moverse el jugador de turno
 	 */
-	public void moverJugador(ComponenteGrafico celda){
-		int movX = celda.getX()/60;
-		int movY = celda.getY()/60;
+	public void moverJugador(ComponenteGrafico celdaMovimiento){
+		//Obtengo las coordenadas en la matriz de la celda a la que quiero mover el Jugador de Turno.
+		int movX = celdaMovimiento.getX()/60;
+		int movY = celdaMovimiento.getY()/60;
 		
-		//jugadoresUsuario.get(proximoJugadorUsuario).mover(direccion);
+		//Obtengo las coordenadas del jugador de Turno en la matriz antes del movimiento para hacer el cambio.
+		int posXJugador = jugadorDeTurno.getPosicionX();
+		int posYJugador = jugadorDeTurno.getPosicionY();
+
 		/*
-		 * mover el jugador a la celda
-		 * poner un piso en la celda donde estaba
-		 * agregarle el oyente llamando con x,y a agregarOyenteMouseTurnos
+		 * mover el jugador a la celda destino
+		 * poner un piso en la celda donde estaba agregandole el oyente llamando con x,y a 
+		 * agregarOyenteMouseTurnos
 		*/
 		
 		grafica.eliminarGrafico(getComponente(movX,movY));
+		jugadorDeTurno.setPosicionX(movX);
+    	jugadorDeTurno.setPosicionX(movY);
+    	this.setComponente(jugadorDeTurno);
     	grafica.agregarGrafico(jugadoresUsuario.get(1));
+    	
+    	grafica.eliminarGrafico(getComponente(posXJugador,posYJugador));
+		ComponenteGrafico c = new Piso(posXJugador,posYJugador,this);
+		this.agregarOyenteMouseTurnos(posXJugador, posYJugador);
+		this.setComponente(celdaMovimiento);
+		grafica.agregarGrafico(jugadoresUsuario.get(1));
+
 	}
 	
 	/**
@@ -521,7 +537,7 @@ public class LogicaJuego {
 			for(ComponenteGrafico comp : this.getCeldasAdyacentes(c)) {
 				if(!adyacentesDeObjetivos.contains(comp))
 					adyacentesDeObjetivos.add(comp);
-			}
+		}
 		
 		//Guardo en una Lista todos las celdas de movimiento posibles de CPU
 		Movimiento movEnemigo = jugadorDeTurno.getMiMovimiento();
@@ -539,8 +555,16 @@ public class LogicaJuego {
 	}
 	
 	public ArrayList<ComponenteGrafico> inteligenciaAtaqueEnemigos(){
-		ArrayList<ComponenteGrafico> posiblesAtqInteligentes = new ArrayList<ComponenteGrafico> ();
-		return posiblesAtqInteligentes;
+		ArrayList<ComponenteGrafico> posiblesAtaques = new ArrayList<ComponenteGrafico> ();
+		
+		Movimiento atqEnemigo = jugadorDeTurno.getMiAtaque();
+		ArrayList<ComponenteGrafico> celdasAtqCPU = atqEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+		
+			for(ComponenteGrafico celdaAtacable : celdasAtqCPU)
+				if(jugadoresUsuario.contains(celdaAtacable) || edificios.contains(celdaAtacable))
+					posiblesAtaques.add(celdaAtacable);
+			
+		return posiblesAtaques;
 	}
 	
 	
@@ -670,25 +694,46 @@ public class LogicaJuego {
 	//setMsjUsuario
 	
 	private void jugar(){
+		Random r = new Random(); boolean atacoCPU = false; int i;
 		
 		while(!termina) {
 			
 			if(turnoComputadora) {
 				proximoJugadorComputadora = proximoJugador(proximoJugadorComputadora,enemigos.size());
 				jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
-				
-				
-				
+					
+				while(!atacoCPU) {
+					//Si puede atacar, ataca. Sino intenta mover a posicion de ataque
+					ArrayList<ComponenteGrafico> ataquesPosibles = this.inteligenciaAtaqueEnemigos();
+						if(!ataquesPosibles.isEmpty()) {
+							i = r.nextInt(ataquesPosibles.size());
+							ComponenteGrafico celdaAtaque = ataquesPosibles.get(i);
+							jugadorDeTurno.atacar(celdaAtaque);
+							
+							atacoCPU = true;
+						}
+						else { //mueve
+							ArrayList<ComponenteGrafico> movimientosPosibles = this.inteligenciaMovimientoEnemigos();
+							if(!movimientosPosibles.isEmpty()) {
+								i = r.nextInt(movimientosPosibles.size());
+								ComponenteGrafico celdaDestino = movimientosPosibles.get(i);
+								this.moverJugador(celdaDestino);
+							}
+						}
+				}
 				//Fin del turno de la Computadora
 				grafica.reestablecerBotones();
 				grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
 			}
 			else //Turno Jugador 
 			{
+				proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
+				jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
 				
+				//Fin del turno del Usuario
+				ataca = mueve = false;
 			}
-			
-		ataca = mueve = false;
+		
 		}
 	}	
 	

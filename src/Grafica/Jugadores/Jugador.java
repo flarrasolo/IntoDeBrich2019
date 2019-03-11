@@ -23,17 +23,8 @@ public abstract class Jugador extends ComponenteGrafico{
 		miAtaque = miAtq;
 	}
 	
-	public int getVelMovimiento(){
-		return velMovimiento;
-	}
+	public abstract void atacar(ComponenteGrafico celda);
 	
-	public int getVelocidadDisparo(){
-		return velDisparo;
-	}
-	public abstract void atacarTerreno(Terreno t);
-	
-	public abstract void atacarJugador(Jugador j);
-
 	public Movimiento getMiMovimiento() {
 		return miMovimiento;
 	}

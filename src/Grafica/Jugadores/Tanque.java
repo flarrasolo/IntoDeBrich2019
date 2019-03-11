@@ -27,10 +27,10 @@ public class Tanque extends Jugador{
 	}
 
 	@Override
-	public void atacarTerreno(Terreno t) {}
-
-	@Override
-	public void atacarJugador(Jugador j) { j.recibirAtaque(this);}
+	public void atacar(ComponenteGrafico celda) {
+		celda.recibirAtaque(this);
+		
+	}
 
 	@Override
 	public void morir() {
