@@ -2,16 +2,10 @@ package Grafica;
 
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.Image;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -19,34 +13,26 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Logica.LogicaJuego;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class GUI extends JFrame{
 	
 	 private JLayeredPane contentPane;
 	 private LogicaJuego mapaLogica;
-	 private boolean disparo;
-	 private boolean movio;
 	 private JLabel msjUsuario;
-	 //private JButton opcA,opcB;
-	 private boolean teclado=true;
 	 private JFrame yo=this;
 	    
 	 /**
 	  * Create the frame.
 	 */
 	 public GUI() {
-	    	disparo=false;
-	    	movio=false;
 	    	mapaLogica = new LogicaJuego(this);
 	    	
-	        //seteo inicial
+	        //Seteo Inicial
 	        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	        this.setTitle("IntoDeBrich 2019");
 	        this.setResizable(false);
 	        
-	        //setteo del panel contenedor
+	        //Setteo del Panel Contenedor
 	        
 	        setBounds(400,150,486,630);
 	        contentPane = new JLayeredPane();
@@ -69,35 +55,11 @@ public class GUI extends JFrame{
 			panel.setBounds(600, 0, 321, 600);
 			contentPane.add(panel);
 			panel.setLayout(null);
-			/*
-			opcA = new JButton("Mover");
-			opcA.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					mapaLogica.setMueve(true);
-					opcA.setEnabled(false);
-				}
-			});
-			opcA.setBounds(68, 531, 89, 23);
-			//opcA.setEnabled(false);
-			contentPane.add(opcA,new Integer(2));
-			
-			opcB = new JButton("Atacar");
-			opcB.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					mapaLogica.setAtaca(true);
-					opcA.setEnabled(false);
-					opcB.setEnabled(false);
-				}
-			});
-			opcB.setBounds(300, 531, 89, 23);
-			//opcB.setEnabled(false);
-			contentPane.add(opcB,new Integer(2));
-			*/
+
 			msjUsuario = new JLabel("Seleccione la ubicación donde desea ubicar el Tanque");
 			msjUsuario.setForeground(Color.WHITE);
 			msjUsuario.setBounds(68, 494, 400, 14);
 			contentPane.add(msjUsuario,new Integer(2));
-			
 			
 			mapaLogica.generarPanel();			
 	        
@@ -135,7 +97,6 @@ public class GUI extends JFrame{
 	 
 	 public void terminarJuego(boolean Victoria){
 		 contentPane.removeAll();
-		 teclado= false;
 		 yo=this;
 		if(Victoria){
 			ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/you_win.png"));
@@ -170,17 +131,5 @@ public class GUI extends JFrame{
 	 public void setMsjUsuario(String msj) {
 		 msjUsuario.setText(msj);
 	 }
-	 /*
-	 public void setMover(boolean puedeMover) {
-		 opcA.setEnabled(puedeMover);
-	 }
 	 
-	 public void setAtacar(boolean puedeAtacar) {
-		 opcB.setEnabled(puedeAtacar);
-	 }
-	 
-	 public void reestablecerBotones() {
-		 opcA.setEnabled(true);
-		 opcB.setEnabled(true);
-	 }*/
 }

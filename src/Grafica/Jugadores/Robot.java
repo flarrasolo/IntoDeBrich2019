@@ -15,11 +15,7 @@ public class Robot extends Jugador{
 	public Robot(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
 		super(x,y,movimiento,ataque);
 		profundidad=2;
-		/*
-		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/robot.png"));
-		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
-		this.setIcon(icono);
-		*/
+
 		setImagen("/Imagenes/robot.png");
 		puedoPonerJugador = false;
 		daño = 2;
@@ -37,6 +33,14 @@ public class Robot extends Jugador{
 		logica.murioUsuario(this);
 	}
 
-	
+	@Override
+	public void setImagenResaltada() {
+		this.setImagen("/Imagenes/robotResaltado.png");
+	}
+
+	@Override
+	public void setImagenNormal() {
+		this.setImagen("/Imagenes/robot.png");
+	}
 
 }

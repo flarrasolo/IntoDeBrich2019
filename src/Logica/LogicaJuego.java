@@ -26,7 +26,8 @@ public class LogicaJuego {
 	protected ArrayList<ComponenteGrafico> edificios;
 	
 	protected Jugador jugadorDeTurno;
-	
+	protected ComponenteGrafico celdaClickUsuario;
+
 	private Movimiento hiloEnemigos;
 	private HiloTurnos manejoTurnos;
 	private HiloTiempoEspera tiempoEsperaParaFinalizar;
@@ -34,7 +35,7 @@ public class LogicaJuego {
 	private int enemigosMatados,edificiosDestruidos,usuariosMuertos,muertesAcumuladas,proximoJugadorUsuario, proximoJugadorComputadora;
 	
 	private boolean termina,porQueTermina, eliminarEnemigo,turnoComputadora;
-	//private boolean ataca, mueve;
+	private boolean ataca, mueve;
 	protected GUI grafica;
 	
 	//Constructor
@@ -47,11 +48,12 @@ public class LogicaJuego {
 		eliminarEnemigo = false;
 		
 		proximoJugadorUsuario = -1;
-		proximoJugadorComputadora = -1;
+		//Comienza Jugando la Computadora
+		proximoJugadorComputadora = 0;
 		
 		muertesAcumuladas = 0; //al llegar a 3, fin del juego con victoria
-		edificiosDestruidos = 0;
-		usuariosMuertos = 0;
+		edificiosDestruidos = 0; //al llegar a 4, fin del juego con derrota
+		usuariosMuertos = 0; //al llegar a 2, fin del juego con derrota
 		
 		grafica=interfaz;
 
@@ -190,7 +192,12 @@ public class LogicaJuego {
 			for (int j=0;j<8;j++)
 				agregarOyenteMouseTurnos(i,j);
 		
-		jugar();
+		HiloTiempoEspera pausa = new HiloTiempoEspera(this,2);
+		pausa.start();
+		
+		jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
+		jugarTurnoCPU();
+		
 	}
 	/*
 	private void eliminarOyentesInicio() {
@@ -206,17 +213,10 @@ public class LogicaJuego {
 
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
-						
-						if(ataca) {
-							atacar(comp);
-							System.out.println("Ataque ("+i+" , )"+j);
-						}
-						else
-							if(mueve) {
-								mover(comp);
-								System.out.println("Movimiento ("+i+" , )"+j);
-							}
+
+						celdaClickUsuario =(ComponenteGrafico) e.getSource();
+						jugarTurnoUsuario();
+
 					}
 
 					@Override
@@ -706,10 +706,10 @@ public class LogicaJuego {
 	}
 	
 	//Adaptar con Hilos
-	private void jugar(){
+	private void jugarTurnoUsuario(){
 		Random r = new Random(); boolean atacoCPU = false; boolean movioCPU = false;
 		int i;
-		
+		/*
 		while(!termina) {
 			
 			grafica.repintarPanel();
@@ -756,51 +756,95 @@ public class LogicaJuego {
 				grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
 			}
 			else //TURNO DEL USUARIO
-			{	
+			{	*/
 				System.out.println("Turno del Usuario");
-				//grafica.reestablecerBotones();
-				//grafica.setMover(true);
-				//grafica.setAtacar(true);
+
 				grafica.repintarPanel();
-				//Corro el indice de la lista de Jugadores al que le toca
-				proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
-				//Obtengo el jugador (Tanque o Robot)
-				jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
-				
-				//ESPERAR POR OPCION
-				//while(ataca == false && mueve == false) {
-					HiloTiempoEspera espera = new HiloTiempoEspera(this,1);
-					espera.run();
-					//}
-				
-				//if(ataca == true)
-					//espera.stop();
-				/*
-				while(ataca == false || mueve == false) {
-					HiloTiempoEspera espera = new HiloTiempoEspera(this,2);
-					espera.run();
-					if(ataca == true)
-						espera.stop();
-						//break;
-				}*/
+								
+				accionElegida();
 				System.out.println("Fin del Turno del Usuario");
 				
 				//Fin del turno del Usuario
 				ataca = mueve = false;
 				grafica.repintarPanel();
-			}
-			
-			//Si acaba de terminar el turno de la computadora, le toca al Usuario. Sino al revés
-			if(turnoComputadora) 
-				turnoComputadora = false;
-			else
-				turnoComputadora = true;
+				
+			//Corro el indice de la lista de Enemigos al que le toca
+			proximoJugadorComputadora = proximoJugador(proximoJugadorComputadora,enemigos.size());
+			//Obtengo el jugador (Avispa o uno de los Escarabajos)
+			jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
+				
+			//CHEQUEAR SI FIN DEL JUEGO
+			//SINO
+			jugarTurnoCPU();
+	}
 		
-			grafica.repintarPanel();
-		}
 		
-		//FIN DEL JUEGO
-	}	
+		
 	
+	private boolean accionElegida () {
+		ArrayList<ComponenteGrafico> ataques = jugadorDeTurno.getMiAtaque().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+		boolean finDelTurno = false;
+			if(ataques.contains(celdaClickUsuario)) {
+				//Inflige el daño
+				jugadorDeTurno.atacar(celdaClickUsuario);
+				finDelTurno = true;
+			}
+			else {
+					ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+					if(movimientos.contains(celdaClickUsuario)) {
+						//Mueve el Jugador a la celda clickeada
+						moverJugador(celdaClickUsuario);
+					}
+				}
+		return finDelTurno;
+	}
+	
+	private void jugarTurnoCPU() {
+		Random r = new Random(); boolean atacoCPU = false; boolean movioCPU = false;
+		int i;
+
+		HiloTiempoEspera espera = new HiloTiempoEspera(this,2);
+		espera.run();
+		
+		jugadorDeTurno.setImagenResaltada();
+					
+		while(!atacoCPU) {
+			//Si puede atacar, ataca. Sino intenta mover a posicion de ataque
+			ArrayList<ComponenteGrafico> ataquesPosibles = this.inteligenciaAtaqueEnemigos();
+				if(!ataquesPosibles.isEmpty()) {
+					i = r.nextInt(ataquesPosibles.size());
+					ComponenteGrafico celdaAtaque = ataquesPosibles.get(i);
+					jugadorDeTurno.atacar(celdaAtaque);
+					System.out.println("Ataque CPU");
+					atacoCPU = true;
+				}
+				else { //mueve
+					ArrayList<ComponenteGrafico> movimientosPosibles = this.inteligenciaMovimientoEnemigos();
+					if(!movimientosPosibles.isEmpty()) {
+						i = r.nextInt(movimientosPosibles.size());
+						ComponenteGrafico celdaDestino = movimientosPosibles.get(i);
+						this.moverJugador(celdaDestino);
+						movioCPU = true;
+						System.out.println("Movio CPU");
+						
+					}
+				}
+		}
+		//Fin del turno de la Computadora
+		atacoCPU = false;
+		
+		espera.run();
+		jugadorDeTurno.setImagenNormal();
+		//Corro el indice de la lista de Jugadores al que le toca
+		proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
+		//Obtengo el jugador (Tanque o Robot)
+		jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
+		
+		//CHEQUEAR SI FIN DEL JUEGO
+		
+		System.out.println("La Computadora finalizó su turno. Ahora es turno del Usuario");
+		
+		grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
+	}
 	
 }

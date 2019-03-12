@@ -33,5 +33,15 @@ public class Escarabajo extends Jugador{
 	public void morir() {
 		logica.murioCPU(this);
 	}
+	
+	@Override
+	public void setImagenResaltada() {
+		this.setImagen("/Imagenes/escarabajoResaltado.png");
+	}
+
+	@Override
+	public void setImagenNormal() {
+		this.setImagen("/Imagenes/escarabajo.png");
+	}
 
 }

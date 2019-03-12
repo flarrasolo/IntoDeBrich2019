@@ -15,11 +15,7 @@ public class Tanque extends Jugador{
 	public Tanque(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
 		super(x,y,movimiento,ataque);
 		profundidad=2;
-		/*
-		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/tanque.png"));
-		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
-		this.setIcon(icono);
-		*/
+
 		setImagen("/Imagenes/tanque.png");
 		puedoPonerJugador = false;
 		daño = 1;
@@ -36,5 +32,14 @@ public class Tanque extends Jugador{
 	public void morir() {
 		logica.murioUsuario(this);		
 	}
+	
+	@Override
+	public void setImagenResaltada() {
+		this.setImagen("/Imagenes/tanqueResaltado.png");
+	}
 
+	@Override
+	public void setImagenNormal() {
+		this.setImagen("/Imagenes/tanque.png");
+	}
 }

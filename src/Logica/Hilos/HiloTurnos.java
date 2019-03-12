@@ -11,33 +11,58 @@ public class HiloTurnos extends Thread{
 	protected LogicaJuego miLogica;
 	protected Jugador jugadorDeTurno;
 	protected ArrayList<Jugador> jugadoresUsuario, enemigos;
+	protected ComponenteGrafico celdaClick;
+	protected int tiempo;
 	
-	protected boolean mover, atacar, turnoJugador, turnoComputadora;
-	int proximoJugadorUsuario, proximoJugadorComputadora;
+	protected boolean mover, atacar;
 	
 	
-	public HiloTurnos(LogicaJuego logic,ArrayList<Jugador> jugadores,ArrayList<Jugador> enemigos)
+	public HiloTurnos(LogicaJuego logic, Jugador turno,ComponenteGrafico celda,int t)
 	{
-		miLogica = logic;
-		
-		jugadoresUsuario = jugadores;
-		this.enemigos = enemigos;
-		
-		proximoJugadorUsuario = 0;
-		proximoJugadorComputadora = 0;
-		
-		turnoJugador = false;
-		turnoComputadora = true;
+		miLogica=logic;
+		tiempo = t;
+		//jugadoresUsuario = jugadores;
+		//this.enemigos = enemigos;
+		jugadorDeTurno = turno;
+		celdaClick = celda;
+				
 		mover = false;
 		atacar = false;
 		
-		jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
 	}
 	
 	/**
 	 * Corre un turno de jugador o computadora mientras no sea fin del juego
 	 */
 	public void run() {
+		
+		try{
+			
+			sleep(1000*tiempo);
+			
+		}catch(InterruptedException e){ e.printStackTrace();}
+		stop();
+
+	}
+	
+	private void accionElegida (ComponenteGrafico comp) {
+		ArrayList<ComponenteGrafico> ataques = jugadorDeTurno.getMiAtaque().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+			if(ataques.contains(comp)) {
+				atacar = true;
+				//Inflige el daño
+				jugadorDeTurno.atacar(comp);
+			}
+			else {
+				if(!mover) {
+					ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+					if(movimientos.contains(comp)) {
+						mover = true;
+						//Mueve el Jugador a la celda clickeada
+						miLogica.moverJugador(comp);
+					}
+				}
+			}
+	}
 		/*
 		while(!miLogica.finDelJuego()) {
 			
@@ -99,7 +124,6 @@ public class HiloTurnos extends Thread{
 		
 			miLogica.actualizarPanel();
 		*/
-		}
 		
 		
 		

@@ -25,6 +25,10 @@ public abstract class Jugador extends ComponenteGrafico{
 	
 	public abstract void atacar(ComponenteGrafico celda);
 	
+	public abstract void setImagenResaltada();
+	
+	public abstract void setImagenNormal();
+	
 	public Movimiento getMiMovimiento() {
 		return miMovimiento;
 	}
@@ -48,6 +52,7 @@ public abstract class Jugador extends ComponenteGrafico{
 	public void setDañoEdificios(int dañoEdificios) {
 		this.dañoEdificios = dañoEdificios;
 	}
+	
 	
 	/**
 	 * Retorna true si el Jugador recibio el daño
