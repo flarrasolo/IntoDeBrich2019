@@ -18,8 +18,10 @@ public class GUI extends JFrame{
 	
 	 private JLayeredPane contentPane;
 	 private LogicaJuego mapaLogica;
-	 private JLabel msjUsuario;
+	 private JLabel msjUsuario, lblVidas;
 	 private JFrame yo=this;
+	 private JLabel label;
+	 private JLabel lblEdificios;
 	    
 	 /**
 	  * Create the frame.
@@ -57,9 +59,25 @@ public class GUI extends JFrame{
 			panel.setLayout(null);
 
 			msjUsuario = new JLabel("Seleccione la ubicación donde desea ubicar el Tanque");
-			msjUsuario.setForeground(Color.WHITE);
-			msjUsuario.setBounds(68, 494, 400, 14);
+			msjUsuario.setForeground(Color.YELLOW);
+			msjUsuario.setBounds(20, 491, 400, 14);
 			contentPane.add(msjUsuario,new Integer(2));
+			
+			lblVidas = new JLabel("Tanque: 10  -  Robot: 10  -  Escarabajo: 10  -  Escarabajo: 10  -  Avispa: 10");
+			
+			lblVidas.setForeground(Color.WHITE);
+			lblVidas.setBounds(20, 549, 427, 22);
+			contentPane.add(lblVidas,new Integer(2));
+			
+			label = new JLabel("PUNTOS DE ENERGIA");
+			label.setForeground(Color.WHITE);
+			label.setBounds(20, 524, 266, 14);
+			contentPane.add(label,new Integer(2));
+			
+			lblEdificios = new JLabel("Edificios: ");
+			lblEdificios.setForeground(Color.WHITE);
+			lblEdificios.setBounds(20, 577, 400, 14);
+			contentPane.add(lblEdificios,new Integer(2));
 			
 			mapaLogica.generarPanel();			
 	        
@@ -132,4 +150,11 @@ public class GUI extends JFrame{
 		 msjUsuario.setText(msj);
 	 }
 	 
+	 public void setVidas(String vidas) {
+		 lblVidas.setText(vidas);
+
+	 }
+	 public void setVidasEdificios(String vidas) {
+		 lblEdificios.setText("Edificios :"+vidas);
+	 }
 }

@@ -25,12 +25,11 @@ public class Tanque extends Jugador{
 	@Override
 	public void atacar(ComponenteGrafico celda) {
 		celda.recibirAtaque(this);
-		
 	}
 
 	@Override
 	public void morir() {
-		logica.murioUsuario(this);		
+		logica.murioUsuario(this);
 	}
 	
 	@Override
