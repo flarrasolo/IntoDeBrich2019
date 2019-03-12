@@ -29,7 +29,7 @@ public class GUI extends JFrame{
 	 private boolean disparo;
 	 private boolean movio;
 	 private JLabel msjUsuario;
-	 private JButton opcA,opcB;
+	 //private JButton opcA,opcB;
 	 private boolean teclado=true;
 	 private JFrame yo=this;
 	    
@@ -69,7 +69,7 @@ public class GUI extends JFrame{
 			panel.setBounds(600, 0, 321, 600);
 			contentPane.add(panel);
 			panel.setLayout(null);
-			
+			/*
 			opcA = new JButton("Mover");
 			opcA.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -78,7 +78,7 @@ public class GUI extends JFrame{
 				}
 			});
 			opcA.setBounds(68, 531, 89, 23);
-			opcA.setEnabled(false);
+			//opcA.setEnabled(false);
 			contentPane.add(opcA,new Integer(2));
 			
 			opcB = new JButton("Atacar");
@@ -90,9 +90,9 @@ public class GUI extends JFrame{
 				}
 			});
 			opcB.setBounds(300, 531, 89, 23);
-			opcB.setEnabled(false);
+			//opcB.setEnabled(false);
 			contentPane.add(opcB,new Integer(2));
-			
+			*/
 			msjUsuario = new JLabel("Seleccione la ubicación donde desea ubicar el Tanque");
 			msjUsuario.setForeground(Color.WHITE);
 			msjUsuario.setBounds(68, 494, 400, 14);
@@ -132,7 +132,7 @@ public class GUI extends JFrame{
 	 public	JLayeredPane getContentPane(){
 	  	return contentPane;
 	 }
-	    
+	 
 	 public void terminarJuego(boolean Victoria){
 		 contentPane.removeAll();
 		 teclado= false;
@@ -170,7 +170,7 @@ public class GUI extends JFrame{
 	 public void setMsjUsuario(String msj) {
 		 msjUsuario.setText(msj);
 	 }
-
+	 /*
 	 public void setMover(boolean puedeMover) {
 		 opcA.setEnabled(puedeMover);
 	 }
@@ -182,5 +182,5 @@ public class GUI extends JFrame{
 	 public void reestablecerBotones() {
 		 opcA.setEnabled(true);
 		 opcB.setEnabled(true);
-	 }
+	 }*/
 }

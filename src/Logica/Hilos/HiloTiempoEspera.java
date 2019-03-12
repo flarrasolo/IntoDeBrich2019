@@ -22,8 +22,9 @@ public class HiloTiempoEspera extends Thread{
 	public void run()
 	{
 		try{
+			
 			sleep(1000*tiempo);
-			//miLogica.finalizar();
+			
 		}catch(InterruptedException e){ e.printStackTrace();}
 		stop();
 	}
