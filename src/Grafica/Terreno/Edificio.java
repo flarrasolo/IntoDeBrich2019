@@ -30,7 +30,7 @@ public class Edificio extends Terreno{
 	@Override
 	public boolean recibirAtaque(Jugador j) {
 		energia -=j.getDañoEdificios();
-		if(energia == 0)
+		if(energia <= 0)
 			morir();
 		return true;
 	}

@@ -57,7 +57,7 @@ public abstract class Jugador extends ComponenteGrafico{
 	@Override
 	public boolean recibirAtaque(Jugador j) { 
 		energia-=j.getDaño();  
-		if(energia == 0)
+		if(energia <= 0)
 			morir();
 		return true;
 	}
