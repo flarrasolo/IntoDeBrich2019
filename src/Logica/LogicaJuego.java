@@ -149,8 +149,10 @@ public class LogicaJuego {
 								}
 								else {
 									crearRobot(ingX,ingY);
+									/*
 									System.out.println("Turno de la Computadora");
 									grafica.setMsjUsuario("Turno de la Computadora");
+									*/
 									comenzarJuego();
 								}
 							}
@@ -170,6 +172,33 @@ public class LogicaJuego {
 					
 				}); 
 	}
+	
+	private void agregarOyenteMouseTurnos(int i, int j) {
+		
+		mapa[j][i].addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				celdaClickUsuario =(ComponenteGrafico) e.getSource();
+				jugarTurnoUsuario();
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			
+		}); 
+}
 	
 
 	/**
@@ -214,33 +243,6 @@ public class LogicaJuego {
 	public void agregarGrafico(ComponenteGrafico x){
 		grafica.agregarGrafico(x);
 	}
-
-	private void agregarOyenteMouseTurnos(int i, int j) {
-		
-				mapa[j][i].addMouseListener(new MouseListener() {
-
-					@Override
-					public void mouseClicked(MouseEvent e) {
-
-						celdaClickUsuario =(ComponenteGrafico) e.getSource();
-						jugarTurnoUsuario();
-
-					}
-
-					@Override
-					public void mousePressed(MouseEvent e) {}
-
-					@Override
-					public void mouseReleased(MouseEvent e) {}
-
-					@Override
-					public void mouseEntered(MouseEvent e) {}
-
-					@Override
-					public void mouseExited(MouseEvent e) {}
-					
-				}); 
-	}
 	
 	//---------------------------------Jugabilidad----------------------------------------------
 	
@@ -254,8 +256,8 @@ public class LogicaJuego {
 			for (int j=0;j<8;j++)
 				agregarOyenteMouseTurnos(i,j);
 		
-		HiloTiempoEspera pausa = new HiloTiempoEspera(this,2);
-		pausa.start();
+		//HiloTiempoEspera pausa = new HiloTiempoEspera(this,2);
+		//pausa.start();
 		
 		jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
 		jugarTurnoCPU();
@@ -263,7 +265,7 @@ public class LogicaJuego {
 	}
 	
 	/**
-	 * Indica si termino el juego para frenar los hilos
+	 * Indica si termino el juego
 	 * @return True si termino el juego, False en caso contrario
 	 */
 	public boolean finDelJuego()
@@ -396,9 +398,9 @@ public class LogicaJuego {
 		
 		//Pongo el Jugador donde hizo click el usuario
 		eliminarGrafico(getComponente(movX,movY));
-    	//setComponente(jugadorDeTurno);
-		jugadorDeTurno.setPosicionX(movX); 
+    	jugadorDeTurno.setPosicionX(movX); 
     	jugadorDeTurno.setPosicionY(movY);
+    	setComponente(jugadorDeTurno);
     	agregarGrafico(getComponente(movX,movY));
     	//mapa[movY][movX]=jugadorDeTurno;
     	
@@ -584,18 +586,18 @@ public class LogicaJuego {
 			prox = (actual+1) % cantLista;
 		return prox;
 	}
-	
-	//Adaptar con Hilos
+
 	private void jugarTurnoUsuario(){
-			
-			System.out.println("Turno del Usuario");
+		boolean movioUsuario = false;
+		
+			System.out.println("-----------------Turno del Usuario-----------------");
 			grafica.setMsjUsuario("Turno del Usuario");
 			
 				jugadorDeTurno.setImagenResaltada();
 				grafica.repintarPanel();
 				
 				//Si es un movimiento y todavia no movio el jugador, lo hago.
-				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionY(), jugadorDeTurno.getPosicionX());
+				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
 				
 				if(!movioUsuario && movimientos.contains(celdaClickUsuario) ) {
 					//Mueve el Jugador a la celda clickeada
@@ -638,10 +640,11 @@ public class LogicaJuego {
 									grafica.setMsjUsuario("Selecciono una celda que no es Ataque ni Movimiento");
 									System.out.println("Selecciono una celda que no es Ataque ni Movimiento");
 								}
+								else
+									System.out.println("NO HIZO NADA");
 							}
 				}
-
-		celdaClickUsuario = null;
+		
 		grafica.repintarPanel();
 	}
 	
@@ -649,6 +652,10 @@ public class LogicaJuego {
 		Random r = new Random(); boolean finDelTurno = false; boolean movioCPU = false;
 		int i;
 		
+		//HiloTiempoEspera espera = new HiloTiempoEspera(this,2);
+		//espera.run();
+		
+		System.out.println("------------------------------Turno CPU------------------------------");
 		jugadorDeTurno.setImagenResaltada();
 		grafica.repintarPanel();
 					
@@ -695,10 +702,7 @@ public class LogicaJuego {
 		//Fin del turno de la Computadora
 		
 		actualizarVidas();
-		
-		HiloTiempoEspera espera = new HiloTiempoEspera(this,2);
-		espera.run();
-		
+	
 		jugadorDeTurno.setImagenNormal();
 		grafica.repintarPanel();
 		
@@ -707,8 +711,9 @@ public class LogicaJuego {
 		//Obtengo el jugador (Tanque o Robot)
 		jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
 		
-		System.out.println("La Computadora finalizó su turno. Ahora es turno del Usuario");
+		celdaClickUsuario = null;
 		
+		System.out.println("La Computadora finalizó su turno. Ahora es turno del Usuario");
 		grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
 		
 		grafica.repintarPanel();
@@ -721,10 +726,10 @@ public class LogicaJuego {
 	 */
 	private void ingresarRobot(int x, int y){
 		Jugador robot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
-		mapa[robot.getPosicionX()][robot.getPosicionY()] = robot;/*
-		for(ComponenteGrafico c: robot.getMiMovimiento().getPosiblesMovimientos(y, x))
-			System.out.println("( "+c.getPosicionX()+" , "+c.getPosicionY()+" )");
-			*/
+		mapa[robot.getPosicionX()][robot.getPosicionY()] = robot;
+		for(ComponenteGrafico c: robot.getMiMovimiento().getPosiblesMovimientos(x,y))
+			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
+		
 		jugadoresUsuario.add(robot);
 	}
 	
@@ -734,6 +739,9 @@ public class LogicaJuego {
 	private void ingresarTanque(int x, int y){
 		Jugador tanque = new Tanque(x,y,this,new MovimientoRadio(this,5),new AtaqueFilaColumna(this));
 		mapa[tanque.getPosicionX()][tanque.getPosicionY()] = tanque;
+		/*for(ComponenteGrafico c: tanque.getMiMovimiento().getPosiblesMovimientos(x,y))
+			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
+		*/
 		jugadoresUsuario.add(tanque);
 	}
 	

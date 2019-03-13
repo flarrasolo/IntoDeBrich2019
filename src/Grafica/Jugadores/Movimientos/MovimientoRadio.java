@@ -16,8 +16,7 @@ public class MovimientoRadio extends Movimiento{
 
 	@Override
 	public ArrayList<ComponenteGrafico> getPosiblesMovimientos(int x, int y) {
-		//int x = c.getPosicionX();
-		//int y = c.getPosicionY();
+
 		ArrayList<ComponenteGrafico> listaRadio = new ArrayList<ComponenteGrafico> ();
 	
 		if(radio>1) {
