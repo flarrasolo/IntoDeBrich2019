@@ -483,12 +483,12 @@ public class LogicaJuego {
 	/**
 	 * Si se murio el tercer y ultimo enemigo, finaliza el juego con victoria para el usuario
 	 */
-	public void murioCPU(int x, int y){
-		//eliminarComponente(x,y);
+	public void murioCPU(Jugador morirme){
+		eliminarComponente(morirme.getPosicionX(),morirme.getPosicionY());
 		muertesAcumuladas++;
 		if(muertesAcumuladas == 3)
 			finalizarJuego(true);
-		enemigos.remove(getComponente(x,y));
+		enemigos.remove(morirme);
 	}
 	
 	/**
@@ -677,7 +677,6 @@ public class LogicaJuego {
 					finDelTurno = true;
 		}
 		//Fin del turno de la Computadora
-		finDelTurno = false;
 		
 		actualizarVidas();
 		

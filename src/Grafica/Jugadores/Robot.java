@@ -13,7 +13,7 @@ import Logica.LogicaJuego;
 public class Robot extends Jugador{
 	
 	public Robot(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
-		super(x,y,movimiento,ataque);
+		super(x,y,l,movimiento,ataque);
 		profundidad=2;
 
 		setImagen("/Imagenes/robot.png");

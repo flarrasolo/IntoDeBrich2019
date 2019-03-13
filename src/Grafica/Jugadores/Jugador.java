@@ -3,6 +3,7 @@ package Grafica.Jugadores;
 import Grafica.ComponenteGrafico;
 import Grafica.Jugadores.Movimientos.Movimiento;
 import Grafica.Terreno.Terreno;
+import Logica.LogicaJuego;
 
 public abstract class Jugador extends ComponenteGrafico{
 	
@@ -13,8 +14,8 @@ public abstract class Jugador extends ComponenteGrafico{
 	protected int velMovimiento;
 	protected int velDisparo;
 	
-	public Jugador(int x,int y,Movimiento miMov,Movimiento miAtq){
-		super(x,y);
+	public Jugador(int x,int y,LogicaJuego l,Movimiento miMov,Movimiento miAtq){
+		super(x,y,l);
 		
 		puedoPonerJugador = false;
 		energia=10;

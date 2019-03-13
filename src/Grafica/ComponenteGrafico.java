@@ -29,7 +29,7 @@ public abstract class ComponenteGrafico extends JLabel {
 	protected LogicaJuego logica;
 	
 	/*Constructor*/
-	public ComponenteGrafico(int x, int y){	
+	public ComponenteGrafico(int x, int y, LogicaJuego miLogica){	
 		super();
 		miX = x;
 		miY = y;
@@ -37,6 +37,8 @@ public abstract class ComponenteGrafico extends JLabel {
 		pixelY=miY*alto;
 		setBounds(pixelX ,pixelY , ancho, alto);
 		setVisible(true);
+		
+		logica = miLogica;
 	}
 	
 	/*--------------------------------------------------Comandos------------------------------------------------------*/

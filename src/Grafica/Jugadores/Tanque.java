@@ -13,7 +13,7 @@ import Logica.LogicaJuego;
 public class Tanque extends Jugador{
 
 	public Tanque(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
-		super(x,y,movimiento,ataque);
+		super(x,y,l,movimiento,ataque);
 		profundidad=2;
 
 		setImagen("/Imagenes/tanque.png");

@@ -13,7 +13,7 @@ import Logica.LogicaJuego;
 public class Avispa extends Jugador{
 	
 	public Avispa(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
-		super(x,y,movimiento,ataque);
+		super(x,y,l,movimiento,ataque);
 		profundidad=2;
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/avispa.png"));
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
@@ -31,7 +31,7 @@ public class Avispa extends Jugador{
 
 	@Override
 	public void morir() {
-		logica.murioCPU(miX,miY);
+		logica.murioCPU(this);
 	}
 
 	@Override

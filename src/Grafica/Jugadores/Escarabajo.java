@@ -13,7 +13,7 @@ import Logica.LogicaJuego;
 public class Escarabajo extends Jugador{
 	
 	public Escarabajo(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
-		super(x,y,movimiento,ataque);
+		super(x,y,l,movimiento,ataque);
 		profundidad=2;
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/escarabajo.png"));
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
@@ -31,7 +31,7 @@ public class Escarabajo extends Jugador{
 
 	@Override
 	public void morir() {
-		logica.murioCPU(miX,miY);
+		logica.murioCPU(this);
 	}
 	
 	@Override
