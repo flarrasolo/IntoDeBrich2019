@@ -301,7 +301,7 @@ public class LogicaJuego {
 			eliminarGrafico(getComponente(x, y));
 			mapa[y][x]=new Piso(x,y,this);
 			agregarOyenteMouseTurnos(x,y);
-			agregarGrafico(getComponente(x, y));
+			agregarGrafico(getComponente(x,y));
 		
 	}
 	
@@ -452,7 +452,7 @@ public class LogicaJuego {
 		
 		//Guardo en una Lista todos las celdas de movimiento posibles de CPU
 		Movimiento movEnemigo = jugadorDeTurno.getMiMovimiento();
-		ArrayList<ComponenteGrafico> posiblesMovCPU = movEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+		ArrayList<ComponenteGrafico> posiblesMovCPU = movEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionY(), jugadorDeTurno.getPosicionX());
 
 		//Cada celda que este en ambas listas, es un posible movimiento inteligente
 		//Para tomar posicion de ataque, y se guarda en la lista posiblesMovInteligentes 
@@ -590,7 +590,8 @@ public class LogicaJuego {
 				grafica.repintarPanel();
 				
 				//Si es un movimiento y todavia no movio el jugador, lo hago.
-				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionY(), jugadorDeTurno.getPosicionX());
+				
 				if(!movioUsuario && movimientos.contains(celdaClickUsuario) ) {
 					//Mueve el Jugador a la celda clickeada
 					moverJugador(celdaClickUsuario);
@@ -633,7 +634,8 @@ public class LogicaJuego {
 								System.out.println("Selecciono una celda que no es Ataque ni Movimiento");
 							}
 				}
-			
+
+		grafica.repintarPanel();
 	}
 	
 	private void jugarTurnoCPU() {
@@ -668,7 +670,7 @@ public class LogicaJuego {
 						jugadorDeTurno.setImagenNormal();
 						grafica.repintarPanel();
 						actualizarEdificios();
-						System.out.println("( "+jugadorDeTurno.getPosicionX()+" , "+jugadorDeTurno.getPosicionY()+" )");
+						System.out.println("( "+jugadorDeTurno.getPosicionY()+" , "+jugadorDeTurno.getPosicionX()+" )");
 						movioCPU = true;
 						grafica.setMsjUsuario("Movio CPU");
 						System.out.println("Movio CPU");
@@ -696,6 +698,8 @@ public class LogicaJuego {
 		System.out.println("La Computadora finalizó su turno. Ahora es turno del Usuario");
 		
 		grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
+		
+		grafica.repintarPanel();
 	}
 	
 	/*--------------------------------Actualizacion de Interfaz---------------------------------*/
@@ -736,6 +740,8 @@ public class LogicaJuego {
     	grafica.agregarGrafico(jugadoresUsuario.get(0));
     }
 	
+	
+	/*--------------------------------LABELS------------------------------*/
 	private void actualizarVidas() {
 		String vidas = " "; String vidasEdificios = " ";
 		for(Jugador j: jugadoresUsuario)

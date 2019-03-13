@@ -14,8 +14,6 @@ public class AtaqueAdyacentes extends Movimiento{
 
 	@Override
 	public ArrayList<ComponenteGrafico> getPosiblesMovimientos(int x, int y) {
-		//int x = c.getPosicionX();
-		//int y = c.getPosicionY();
 		ArrayList<ComponenteGrafico> listaAdy = new ArrayList<ComponenteGrafico> ();
 		
 		//Casos especiales: Esquinas( (0,0);(0,7);(7,0);(7,7) ) 

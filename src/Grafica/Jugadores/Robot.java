@@ -15,7 +15,7 @@ public class Robot extends Jugador{
 	public Robot(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
 		super(x,y,l,movimiento,ataque);
 		profundidad=2;
-
+		
 		setImagen("/Imagenes/robot.png");
 		puedoPonerJugador = false;
 		daño = 2;

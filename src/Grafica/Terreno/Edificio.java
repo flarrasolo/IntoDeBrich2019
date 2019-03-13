@@ -12,6 +12,7 @@ public class Edificio extends Terreno{
 	public Edificio(int x, int y, LogicaJuego l) {
 		super(x,y,l);
 		profundidad=2;
+		
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/edificio.png"));
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
