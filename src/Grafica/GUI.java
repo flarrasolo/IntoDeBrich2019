@@ -22,6 +22,7 @@ public class GUI extends JFrame{
 	 private JFrame yo=this;
 	 private JLabel label;
 	 private JLabel lblEdificios;
+	 private JLabel lblEdificiosDestruidos;
 	    
 	 /**
 	  * Create the frame.
@@ -79,7 +80,12 @@ public class GUI extends JFrame{
 			lblEdificios.setBounds(20, 577, 400, 14);
 			contentPane.add(lblEdificios,new Integer(2));
 			
-			mapaLogica.generarPanel();			
+			lblEdificiosDestruidos = new JLabel("Edificios Destruidos: ");
+			lblEdificiosDestruidos.setForeground(Color.WHITE);
+			lblEdificiosDestruidos.setBounds(269, 524, 151, 14);
+			contentPane.add(lblEdificiosDestruidos,new Integer(2));
+			
+			mapaLogica.generarPanel();
 	        
 	        setVisible(true);
 	       	        
@@ -155,6 +161,10 @@ public class GUI extends JFrame{
 
 	 }
 	 public void setVidasEdificios(String vidas) {
-		 lblEdificios.setText("Edificios :"+vidas);
+		 lblEdificios.setText("Energía Edificios :"+vidas);
+	 }
+	 
+	 public void setEdificiosDestruidos(String cant) {
+		 lblEdificiosDestruidos.setText("Edificios Destruidos: "+cant);
 	 }
 }
