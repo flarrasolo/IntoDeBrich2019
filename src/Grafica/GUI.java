@@ -19,7 +19,6 @@ public class GUI extends JFrame{
 	 private JLayeredPane contentPane;
 	 private LogicaJuego mapaLogica;
 	 private JLabel msjUsuario, lblVidas;
-	 private JFrame yo=this;
 	 private JLabel label;
 	 private JLabel lblEdificios;
 	 private JLabel lblEdificiosDestruidos;
@@ -121,10 +120,10 @@ public class GUI extends JFrame{
 	 
 	 public void terminarJuego(boolean Victoria){
 		 contentPane.removeAll();
-		 yo=this;
 		if(Victoria){
 			ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/you_win.png"));
-			Icon icono = new ImageIcon(fot.getImage().getScaledInstance(this.getWidth()+200, this.getHeight(), Image.SCALE_DEFAULT));
+			//Icon icono = new ImageIcon(fot.getImage().getScaledInstance(this.getWidth()+200, this.getHeight(), Image.SCALE_DEFAULT));
+			Icon icono = new ImageIcon(fot.getImage());
 			JLabel algo = new JLabel();
 		    
 			this.setBounds(100, 100, this.getWidth()+200, this.getHeight());
@@ -136,7 +135,8 @@ public class GUI extends JFrame{
 		}else{
 			
 			ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/gameover.png"));
-			Icon icono = new ImageIcon(fot.getImage().getScaledInstance(this.getWidth()+200, this.getHeight(), Image.SCALE_DEFAULT));
+			//Icon icono = new ImageIcon(fot.getImage().getScaledInstance(this.getWidth()+200, this.getHeight(), Image.SCALE_DEFAULT));
+			Icon icono = new ImageIcon(fot.getImage());
 			JLabel algo = new JLabel();
 			this.setBounds(100, 100, this.getWidth()+200, this.getHeight());
 			algo.setBounds(0, 0, this.getWidth(), this.getHeight());

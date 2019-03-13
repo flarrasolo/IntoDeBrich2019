@@ -574,7 +574,10 @@ public class LogicaJuego {
 	}
 	
 	public int proximoJugador(int actual, int cantLista){
-		return (actual+1) % cantLista;
+		int prox = 0;
+		if(cantLista != 0)
+			prox = (actual+1) % cantLista;
+		return prox;
 	}
 	
 	//Adaptar con Hilos
@@ -669,7 +672,6 @@ public class LogicaJuego {
 						movioCPU = true;
 						grafica.setMsjUsuario("Movio CPU");
 						System.out.println("Movio CPU");
-						
 					}
 				}
 				
