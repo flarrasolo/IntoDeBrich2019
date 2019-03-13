@@ -53,11 +53,11 @@ public abstract class ComponenteGrafico extends JLabel {
 		pixelY=miY*alto;
 	}
 	
-	public void setX(int x){
+	public void setPixelX(int x){
 		pixelX=x;
 	}
 	
-	public void setY(int y){
+	public void setPixelY(int y){
 		pixelY=y;
 	}
 	
@@ -81,11 +81,11 @@ public abstract class ComponenteGrafico extends JLabel {
 		return direccion;
 	}
 	
-	public int getX(){
+	public int getPixelX(){
 		return pixelX;
 	}
 	
-	public int getY(){
+	public int getPixelY(){
 		return pixelY;
 	}
 	
@@ -122,7 +122,7 @@ public abstract class ComponenteGrafico extends JLabel {
 		return false;
 	}
 	
-	public void setImagen(String nombre) {
+	public void setDibujo(String nombre) {
 		ImageIcon fot = new ImageIcon(getClass().getResource(nombre));
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);

@@ -37,11 +37,11 @@ public class Avispa extends Jugador{
 
 	@Override
 	public void setImagenResaltada() {
-		this.setImagen("/Imagenes/avispaResaltada.png");
+		this.setDibujo("/Imagenes/avispaResaltada.png");
 	}
 
 	@Override
 	public void setImagenNormal() {
-		this.setImagen("/Imagenes/avispa.png");
+		this.setDibujo("/Imagenes/avispa.png");
 	}
 }

@@ -1,7 +1,9 @@
 package Grafica;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.Icon;

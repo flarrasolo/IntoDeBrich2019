@@ -16,7 +16,7 @@ public class Robot extends Jugador{
 		super(x,y,l,movimiento,ataque);
 		profundidad=2;
 		
-		setImagen("/Imagenes/robot.png");
+		setDibujo("/Imagenes/robot.png");
 		puedoPonerJugador = false;
 		daño = 2;
 		dañoEdificios = 0;
@@ -35,12 +35,12 @@ public class Robot extends Jugador{
 
 	@Override
 	public void setImagenResaltada() {
-		this.setImagen("/Imagenes/robotResaltado.png");
+		this.setDibujo("/Imagenes/robotResaltado.png");
 	}
 
 	@Override
 	public void setImagenNormal() {
-		this.setImagen("/Imagenes/robot.png");
+		this.setDibujo("/Imagenes/robot.png");
 	}
 
 }

@@ -250,6 +250,7 @@ public class LogicaJuego {
 		
 		devolverPisoNormal();
 		grafica.repintarPanel();
+		actualizarPanel();
 		
 		//Toda celda es "clickeable", solamente va a haber accion si es una accion posible, sino no pasa nada
 		for (int i=0;i<8;i++)
@@ -364,14 +365,14 @@ public class LogicaJuego {
 	private void resaltarLugaresPosibles() {
 		ArrayList<ComponenteGrafico> posiblesUbicaciones = getPosiblesUbicaciones(0,4,8);
 			for(ComponenteGrafico celda : posiblesUbicaciones)
-				celda.setImagen("/Imagenes/fondoResaltado.png");
+				celda.setDibujo("/Imagenes/fondoResaltado.png");
 	}
 	
 	private void devolverPisoNormal() {
 		
 		ArrayList<ComponenteGrafico> posiblesUbicaciones = getPosiblesUbicaciones(0,4,8);
 			for(ComponenteGrafico celda : posiblesUbicaciones)
-				celda.setImagen("/Imagenes/fondo.png");
+				celda.setDibujo("/Imagenes/fondo.png");
 	}
 	
 	/*------------------------------------------Jugador-------------------------------------------- */
@@ -402,6 +403,7 @@ public class LogicaJuego {
     	jugadorDeTurno.setPosicionY(movY);
     	setComponente(jugadorDeTurno);
     	agregarGrafico(getComponente(movX,movY));
+    	
     	//mapa[movY][movX]=jugadorDeTurno;
     	
     	//Pongo Piso donde estaba el Jugador
@@ -588,13 +590,14 @@ public class LogicaJuego {
 	}
 
 	private void jugarTurnoUsuario(){
-		boolean movioUsuario = false;
+		//boolean movioUsuario = false;
 		
 			System.out.println("-----------------Turno del Usuario-----------------");
 			grafica.setMsjUsuario("Turno del Usuario");
 			
 				jugadorDeTurno.setImagenResaltada();
 				grafica.repintarPanel();
+				actualizarPanel();
 				
 				//Si es un movimiento y todavia no movio el jugador, lo hago.
 				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
@@ -603,7 +606,16 @@ public class LogicaJuego {
 					//Mueve el Jugador a la celda clickeada
 					moverJugador(celdaClickUsuario);
 					movioUsuario = true;
-					System.out.println("Mueve Usuario");
+					
+					System.out.println("MOVIO JUGADOR A");
+					System.out.println("( "+jugadorDeTurno.getPosicionY()+" , "+jugadorDeTurno.getPosicionX()+" )");
+					System.out.println("NUEVOS ATAQUES");
+
+					for(ComponenteGrafico c: jugadorDeTurno.getMiAtaque().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY()))
+						System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
+					
+					
+					//System.out.println("Mueve Usuario");
 					grafica.setMsjUsuario("Mueve Usuario");
 				}
 				else {
@@ -624,15 +636,18 @@ public class LogicaJuego {
 									
 									jugadorDeTurno.setImagenNormal();
 									grafica.repintarPanel();
+									actualizarPanel();
 									//Corro el indice de la lista de Enemigos al que le toca
 									proximoJugadorComputadora = proximoJugador(proximoJugadorComputadora,enemigos.size());
 									
 									//Obtengo el jugador (Avispa o uno de los Escarabajos)
 									jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
 									
+									movioUsuario = false;
 									//Actualizo la GUI y le toca el turno a la Computadora
 									actualizarVidas();
 									grafica.repintarPanel();
+									actualizarPanel();
 									jugarTurnoCPU();
 							}
 							else {
@@ -646,6 +661,7 @@ public class LogicaJuego {
 				}
 		
 		grafica.repintarPanel();
+		actualizarPanel();
 	}
 	
 	private void jugarTurnoCPU() {
@@ -658,6 +674,7 @@ public class LogicaJuego {
 		System.out.println("------------------------------Turno CPU------------------------------");
 		jugadorDeTurno.setImagenResaltada();
 		grafica.repintarPanel();
+		actualizarPanel();
 					
 		while(!finDelTurno) {
 			
@@ -685,6 +702,7 @@ public class LogicaJuego {
 						
 						jugadorDeTurno.setImagenNormal();
 						grafica.repintarPanel();
+						actualizarPanel();
 						actualizarEdificios();
 						System.out.println("( "+jugadorDeTurno.getPosicionY()+" , "+jugadorDeTurno.getPosicionX()+" )");
 						movioCPU = true;
@@ -705,6 +723,7 @@ public class LogicaJuego {
 	
 		jugadorDeTurno.setImagenNormal();
 		grafica.repintarPanel();
+		actualizarPanel();
 		
 		//Corro el indice de la lista de Jugadores al que le toca
 		proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
@@ -717,6 +736,7 @@ public class LogicaJuego {
 		grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
 		
 		grafica.repintarPanel();
+		actualizarPanel();
 	}
 	
 	/*--------------------------------Actualizacion de Interfaz---------------------------------*/
@@ -727,9 +747,6 @@ public class LogicaJuego {
 	private void ingresarRobot(int x, int y){
 		Jugador robot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
 		mapa[robot.getPosicionX()][robot.getPosicionY()] = robot;
-		for(ComponenteGrafico c: robot.getMiMovimiento().getPosiblesMovimientos(x,y))
-			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
-		
 		jugadoresUsuario.add(robot);
 	}
 	

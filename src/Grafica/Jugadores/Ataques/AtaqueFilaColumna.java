@@ -16,14 +16,16 @@ public class AtaqueFilaColumna extends Movimiento{
 	public ArrayList<ComponenteGrafico> getPosiblesMovimientos(int x, int y) {
 		ArrayList<ComponenteGrafico> lista = new ArrayList<ComponenteGrafico> ();
 		
-		for(int i=0;i<8;i++) {
-			//Si no coincide con mi componente guardo elemento de fila
+		for(int i=0;i<8;i++)
+			//Si no coincide con mi componente guardo toda la fila
 			if(i!=y)
-				lista.add(logica.getComponente(x,i));
-			//Si no coincide con mi componente guardo elemento de columna
-			if(i!=x)
-				lista.add(logica.getComponente(i,y));
-		}
+					lista.add(logica.getComponente(x,i));
+		
+		for(int j=0;j<8;j++)
+			//Si no coincide con mi componente guardo toda la columna
+			if(j!=x)
+					lista.add(logica.getComponente(j,y));
+		
 
 	return lista;
 	}

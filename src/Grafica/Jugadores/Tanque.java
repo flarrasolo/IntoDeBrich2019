@@ -16,7 +16,7 @@ public class Tanque extends Jugador{
 		super(x,y,l,movimiento,ataque);
 		profundidad=2;
 		
-		setImagen("/Imagenes/tanque.png");
+		setDibujo("/Imagenes/tanque.png");
 		puedoPonerJugador = false;
 		daño = 1;
 		dañoEdificios = 0;
@@ -34,11 +34,11 @@ public class Tanque extends Jugador{
 	
 	@Override
 	public void setImagenResaltada() {
-		this.setImagen("/Imagenes/tanqueResaltado.png");
+		this.setDibujo("/Imagenes/tanqueResaltado.png");
 	}
 
 	@Override
 	public void setImagenNormal() {
-		this.setImagen("/Imagenes/tanque.png");
+		this.setDibujo("/Imagenes/tanque.png");
 	}
 }

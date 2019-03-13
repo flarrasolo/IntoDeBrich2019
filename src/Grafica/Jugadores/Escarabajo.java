@@ -37,12 +37,12 @@ public class Escarabajo extends Jugador{
 	
 	@Override
 	public void setImagenResaltada() {
-		this.setImagen("/Imagenes/escarabajoResaltado.png");
+		this.setDibujo("/Imagenes/escarabajoResaltado.png");
 	}
 
 	@Override
 	public void setImagenNormal() {
-		this.setImagen("/Imagenes/escarabajo.png");
+		this.setDibujo("/Imagenes/escarabajo.png");
 	}
 
 }
