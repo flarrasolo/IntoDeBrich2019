@@ -434,7 +434,7 @@ public class LogicaJuego {
 	public ArrayList<ComponenteGrafico> inteligenciaMovimientoEnemigos(){
 		ArrayList<ComponenteGrafico> posiblesMovInteligentes = new ArrayList<ComponenteGrafico> ();
 		
-		//Guardo en una Lista todas las celdas adyacentes a los objetivos a destriuir para CPU
+		//Guardo en una Lista todas las celdas adyacentes a los objetivos a destriuir para la CPU
 		ArrayList<ComponenteGrafico> adyacentesDeObjetivos = new ArrayList<ComponenteGrafico> ();
 		
 			for (ComponenteGrafico c : this.getCeldasAdyacentes(jugadoresUsuario.get(0)))
@@ -455,7 +455,7 @@ public class LogicaJuego {
 		ArrayList<ComponenteGrafico> posiblesMovCPU = movEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionY(), jugadorDeTurno.getPosicionX());
 
 		//Cada celda que este en ambas listas, es un posible movimiento inteligente
-		//Para tomar posicion de ataque, y se guarda en la lista posiblesMovInteligentes 
+		//Para tomar posicion de ataque, se guarda en la lista posiblesMovInteligentes 
 		//que se retorna
 		
 		for(ComponenteGrafico comp : adyacentesDeObjetivos)
@@ -471,6 +471,7 @@ public class LogicaJuego {
 		Movimiento atqEnemigo = jugadorDeTurno.getMiAtaque();
 		ArrayList<ComponenteGrafico> celdasAtqCPU = atqEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
 		
+			//Agrega a la lista de posibles ataques solo l
 			for(ComponenteGrafico celdaAtacable : celdasAtqCPU)
 				if(jugadoresUsuario.contains(celdaAtacable) || edificios.contains(celdaAtacable))
 					posiblesAtaques.add(celdaAtacable);
@@ -488,6 +489,8 @@ public class LogicaJuego {
 		muertesAcumuladas++;
 		if(muertesAcumuladas == 3)
 			finalizarJuego(true);
+		else//Disminuyo el contador para que me de el proximo con una cantidad menos
+			proximoJugadorComputadora--;
 		enemigos.remove(morirme);
 	}
 	
@@ -499,6 +502,8 @@ public class LogicaJuego {
 		usuariosMuertos++;
 		if(usuariosMuertos == 2)
 			finalizarJuego(false);
+		else//Disminuyo el contador para que me de el proximo con una cantidad menos
+			proximoJugadorUsuario--;
 		jugadoresUsuario.remove(morirme);
 	}
 	
@@ -582,7 +587,7 @@ public class LogicaJuego {
 	
 	//Adaptar con Hilos
 	private void jugarTurnoUsuario(){
-		
+			
 			System.out.println("Turno del Usuario");
 			grafica.setMsjUsuario("Turno del Usuario");
 			
@@ -626,15 +631,17 @@ public class LogicaJuego {
 									//Actualizo la GUI y le toca el turno a la Computadora
 									actualizarVidas();
 									grafica.repintarPanel();
-									celdaClickUsuario = null;
 									jugarTurnoCPU();
 							}
 							else {
-								grafica.setMsjUsuario("Selecciono una celda que no es Ataque ni Movimiento");
-								System.out.println("Selecciono una celda que no es Ataque ni Movimiento");
+								if (!movimientos.contains(celdaClickUsuario)){
+									grafica.setMsjUsuario("Selecciono una celda que no es Ataque ni Movimiento");
+									System.out.println("Selecciono una celda que no es Ataque ni Movimiento");
+								}
 							}
 				}
 
+		celdaClickUsuario = null;
 		grafica.repintarPanel();
 	}
 	
@@ -647,7 +654,7 @@ public class LogicaJuego {
 					
 		while(!finDelTurno) {
 			
-			//Si puede atacar, ataca. Sino intenta mover a posicion de ataque
+			//Si puede atacar, ataca y fin del turno. Sino intenta mover a posicion de ataque
 			ArrayList<ComponenteGrafico> ataquesPosibles = this.inteligenciaAtaqueEnemigos();
 				if(!ataquesPosibles.isEmpty()) {
 					i = r.nextInt(ataquesPosibles.size());
@@ -661,12 +668,14 @@ public class LogicaJuego {
 						System.out.println("Ataque CPU");
 						finDelTurno = true;
 				}
-				else { //mueve
+				else { //mueve si es que todavia no movio
 					ArrayList<ComponenteGrafico> movimientosPosibles = this.inteligenciaMovimientoEnemigos();
-					if( !movioCPU && !movimientosPosibles.isEmpty() ) {
+					if(!movioCPU) {
+						if(!movimientosPosibles.isEmpty()) {
 						i = r.nextInt(movimientosPosibles.size());
 						ComponenteGrafico celdaDestino = movimientosPosibles.get(i);
 						this.moverJugador(celdaDestino);
+						
 						jugadorDeTurno.setImagenNormal();
 						grafica.repintarPanel();
 						actualizarEdificios();
@@ -674,11 +683,14 @@ public class LogicaJuego {
 						movioCPU = true;
 						grafica.setMsjUsuario("Movio CPU");
 						System.out.println("Movio CPU");
+						}
+						else
+							if(!movioCPU && !finDelTurno)
+								finDelTurno = true;
 					}
+					else
+						finDelTurno = true;
 				}
-				
-				if(!finDelTurno && !movioCPU)
-					finDelTurno = true;
 		}
 		//Fin del turno de la Computadora
 		
@@ -709,7 +721,10 @@ public class LogicaJuego {
 	 */
 	private void ingresarRobot(int x, int y){
 		Jugador robot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
-		mapa[robot.getPosicionX()][robot.getPosicionY()] = robot;
+		mapa[robot.getPosicionX()][robot.getPosicionY()] = robot;/*
+		for(ComponenteGrafico c: robot.getMiMovimiento().getPosiblesMovimientos(y, x))
+			System.out.println("( "+c.getPosicionX()+" , "+c.getPosicionY()+" )");
+			*/
 		jugadoresUsuario.add(robot);
 	}
 	
