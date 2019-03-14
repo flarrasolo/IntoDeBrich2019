@@ -83,8 +83,8 @@ public class LogicaJuego {
 		Random aleatorio = new Random();
 
 		int cantEdificios = 8;
-		int cantMontanias =	8 + aleatorio.nextInt(3);
-		int cantAgua = 7 + aleatorio.nextInt(4);
+		int cantMontanias =	4 + aleatorio.nextInt(2);
+		int cantAgua = 7 + aleatorio.nextInt(3);
 		int cantTierra = 4 + aleatorio.nextInt(3);
 		
 		for(int c=0;c<cantEdificios;c++) {
@@ -404,15 +404,9 @@ public class LogicaJuego {
     	setComponente(jugadorDeTurno);
     	agregarGrafico(getComponente(movX,movY));
     	
-    	//mapa[movY][movX]=jugadorDeTurno;
-    	
     	//Pongo Piso donde estaba el Jugador
     	eliminarComponente(posXJugador,posYJugador);
 
-		//eliminarGrafico(getComponente(x, y));
-		//mapa[y][x]=new Piso(x,y,this);
-		//agregarOyenteMouseTurnos(x,y);
-		//agregarGrafico(getComponente(x, y));
 	}
 	
 	
@@ -493,8 +487,8 @@ public class LogicaJuego {
 		muertesAcumuladas++;
 		if(muertesAcumuladas == 3)
 			finalizarJuego(true);
-		else//Disminuyo el contador para que me de el proximo con una cantidad menos
-			proximoJugadorComputadora--;
+		else//Reseteo el contador de jugadores para que siga en rango
+			proximoJugadorComputadora = 0;
 		enemigos.remove(morirme);
 	}
 	
@@ -506,8 +500,8 @@ public class LogicaJuego {
 		usuariosMuertos++;
 		if(usuariosMuertos == 2)
 			finalizarJuego(false);
-		else//Disminuyo el contador para que me de el proximo con una cantidad menos
-			proximoJugadorUsuario--;
+		else//Reseteo el contador de enemigos para que siga en rango
+			proximoJugadorUsuario = 0;
 		jugadoresUsuario.remove(morirme);
 	}
 	
@@ -590,7 +584,6 @@ public class LogicaJuego {
 	}
 
 	private void jugarTurnoUsuario(){
-		//boolean movioUsuario = false;
 		
 			System.out.println("-----------------Turno del Usuario-----------------");
 			grafica.setMsjUsuario("Turno del Usuario");
@@ -599,10 +592,11 @@ public class LogicaJuego {
 				grafica.repintarPanel();
 				actualizarPanel();
 				
-				//Si es un movimiento y todavia no movio el jugador, lo hago.
 				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
 				
-				if(!movioUsuario && movimientos.contains(celdaClickUsuario) ) {
+				
+				//Si no es un ataque, todavia no movio y es un posible movimiento, muevo al Jugador.
+				if(!movioUsuario && movimientos.contains(celdaClickUsuario)) {
 					//Mueve el Jugador a la celda clickeada
 					moverJugador(celdaClickUsuario);
 					movioUsuario = true;
@@ -619,9 +613,10 @@ public class LogicaJuego {
 					grafica.setMsjUsuario("Mueve Usuario");
 				}
 				else {
-					//Si no es un movimiento, reviso si es un ataque
 					ArrayList<ComponenteGrafico> ataques = jugadorDeTurno.getMiAtaque().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
-							if(ataques.contains(celdaClickUsuario)) {
+					
+					//Si no es un movimiento, entonces si es un ataque produzco el daño
+					if(ataques.contains(celdaClickUsuario)) {
 								//Inflige el daño
 								//if (!fallaAtaque()) {
 									jugadorDeTurno.atacar(celdaClickUsuario);
@@ -637,13 +632,15 @@ public class LogicaJuego {
 									jugadorDeTurno.setImagenNormal();
 									grafica.repintarPanel();
 									actualizarPanel();
+
+									movioUsuario = false;
+									
 									//Corro el indice de la lista de Enemigos al que le toca
 									proximoJugadorComputadora = proximoJugador(proximoJugadorComputadora,enemigos.size());
 									
 									//Obtengo el jugador (Avispa o uno de los Escarabajos)
 									jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
 									
-									movioUsuario = false;
 									//Actualizo la GUI y le toca el turno a la Computadora
 									actualizarVidas();
 									grafica.repintarPanel();
@@ -781,13 +778,13 @@ public class LogicaJuego {
     }
 	
 	
-	/*--------------------------------LABELS------------------------------*/
+	/*-------------------------------------------LABELS----------------------------------------*/
 	private void actualizarVidas() {
 		String vidas = " "; String vidasEdificios = " ";
 		for(Jugador j: jugadoresUsuario)
-			vidas+=j.getEnergia()+ "  -  ";
+			vidas+="    -    "+j.getEnergia();
 		for(Jugador enemigo : enemigos)
-			vidas+=enemigo.getEnergia()+ "  -  ";
+			vidas+="    -    "+enemigo.getEnergia();
 		
 		for(ComponenteGrafico edif : edificios)
 			vidasEdificios+=edif.getEnergia()+ "  -  ";

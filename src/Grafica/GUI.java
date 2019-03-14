@@ -151,6 +151,8 @@ public class GUI extends JFrame{
 	 }
 	 
 	 public void repintarPanel() {
+		 this.revalidate();
+		 //contentPane.revalidate();
 		 contentPane.repaint();
 	 }
 	 
