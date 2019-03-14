@@ -411,11 +411,17 @@ public class LogicaJuego {
 	
 	
 	public boolean fallaAtaque() {
-		boolean falla = false;
+		boolean falla = true;
+		/*
 		Random r = new Random();
 		int probab = r.nextInt(100);
 			if(probab<=29)
 				falla = true;
+		*/
+		double random = Math.random();// generamos un numero al azar entre 0 y 1 
+
+		if(random < 0.7)// el 70% de las veces 
+			falla = false;
 		return falla;
 	}
 
