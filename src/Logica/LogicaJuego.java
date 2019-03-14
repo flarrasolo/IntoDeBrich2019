@@ -396,6 +396,9 @@ public class LogicaJuego {
 		//Obtengo las coordenadas del jugador de Turno en la matriz antes del movimiento para hacer el cambio.
 		int posXJugador = jugadorDeTurno.getPosicionX();
 		int posYJugador = jugadorDeTurno.getPosicionY();
+
+    	//Pongo Piso donde estaba el Jugador
+    	eliminarComponente(posXJugador,posYJugador);
 		
 		//Pongo el Jugador donde hizo click el usuario
 		eliminarGrafico(getComponente(movX,movY));
@@ -404,9 +407,6 @@ public class LogicaJuego {
     	setComponente(jugadorDeTurno);
     	agregarGrafico(getComponente(movX,movY));
     	
-    	//Pongo Piso donde estaba el Jugador
-    	eliminarComponente(posXJugador,posYJugador);
-
 	}
 	
 	
@@ -485,6 +485,7 @@ public class LogicaJuego {
 	public void murioCPU(Jugador morirme){
 		eliminarComponente(morirme.getPosicionX(),morirme.getPosicionY());
 		muertesAcumuladas++;
+		actualizarEnemigos();
 		if(muertesAcumuladas == 3)
 			finalizarJuego(true);
 		else//Reseteo el contador de jugadores para que siga en rango
@@ -498,6 +499,7 @@ public class LogicaJuego {
 	public void murioUsuario(Jugador morirme) {
 		eliminarComponente(morirme.getPosicionX(),morirme.getPosicionY());
 		usuariosMuertos++;
+		actualizarUsuarios();
 		if(usuariosMuertos == 2)
 			finalizarJuego(false);
 		else//Reseteo el contador de enemigos para que siga en rango
@@ -511,6 +513,7 @@ public class LogicaJuego {
 	public void edificioDestruido(ComponenteGrafico destruirme) {
 		eliminarComponente(destruirme.getPosicionX(),destruirme.getPosicionY());
 		edificiosDestruidos++;
+		actualizarEdificios();
 		if(edificiosDestruidos == 4)
 			finalizarJuego(false);
 		edificios.remove(destruirme);
@@ -588,12 +591,11 @@ public class LogicaJuego {
 			System.out.println("-----------------Turno del Usuario-----------------");
 			grafica.setMsjUsuario("Turno del Usuario");
 			
-				jugadorDeTurno.setImagenResaltada();
+				//jugadorDeTurno.setImagenResaltada();
 				grafica.repintarPanel();
 				actualizarPanel();
 				
-				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
-				
+				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionY(), jugadorDeTurno.getPosicionX());
 				
 				//Si no es un ataque, todavia no movio y es un posible movimiento, muevo al Jugador.
 				if(!movioUsuario && movimientos.contains(celdaClickUsuario)) {
@@ -607,7 +609,6 @@ public class LogicaJuego {
 
 					for(ComponenteGrafico c: jugadorDeTurno.getMiAtaque().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY()))
 						System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
-					
 					
 					//System.out.println("Mueve Usuario");
 					grafica.setMsjUsuario("Mueve Usuario");
@@ -629,7 +630,7 @@ public class LogicaJuego {
 									grafica.setMsjUsuario("Fin del Turno del Usuario");
 									System.out.println("Fin del Turno del Usuario");
 									
-									jugadorDeTurno.setImagenNormal();
+									//jugadorDeTurno.setImagenNormal();
 									grafica.repintarPanel();
 									actualizarPanel();
 
@@ -646,15 +647,16 @@ public class LogicaJuego {
 									grafica.repintarPanel();
 									actualizarPanel();
 									jugarTurnoCPU();
-							}
-							else {
-								if (!movimientos.contains(celdaClickUsuario)){
-									grafica.setMsjUsuario("Selecciono una celda que no es Ataque ni Movimiento");
-									System.out.println("Selecciono una celda que no es Ataque ni Movimiento");
-								}
-								else
-									System.out.println("NO HIZO NADA");
-							}
+					}
+					else {
+					//Si no es un movimiento ni un ataque selecciono una celda equivocada
+					if (!movimientos.contains(celdaClickUsuario)){
+						grafica.setMsjUsuario("Selecciono una celda que no es Ataque ni Movimiento");
+						System.out.println("Selecciono una celda que no es Ataque ni Movimiento");
+					}
+					else
+						System.out.println("NO HIZO NADA");
+					}
 				}
 		
 		grafica.repintarPanel();
@@ -669,7 +671,7 @@ public class LogicaJuego {
 		//espera.run();
 		
 		System.out.println("------------------------------Turno CPU------------------------------");
-		jugadorDeTurno.setImagenResaltada();
+		//jugadorDeTurno.setImagenResaltada();
 		grafica.repintarPanel();
 		actualizarPanel();
 					
@@ -697,10 +699,9 @@ public class LogicaJuego {
 						ComponenteGrafico celdaDestino = movimientosPosibles.get(i);
 						this.moverJugador(celdaDestino);
 						
-						jugadorDeTurno.setImagenNormal();
+						//jugadorDeTurno.setImagenNormal();
 						grafica.repintarPanel();
 						actualizarPanel();
-						actualizarEdificios();
 						System.out.println("( "+jugadorDeTurno.getPosicionY()+" , "+jugadorDeTurno.getPosicionX()+" )");
 						movioCPU = true;
 						grafica.setMsjUsuario("Movio CPU");
@@ -718,7 +719,7 @@ public class LogicaJuego {
 		
 		actualizarVidas();
 	
-		jugadorDeTurno.setImagenNormal();
+		//jugadorDeTurno.setImagenNormal();
 		grafica.repintarPanel();
 		actualizarPanel();
 		
@@ -726,8 +727,6 @@ public class LogicaJuego {
 		proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
 		//Obtengo el jugador (Tanque o Robot)
 		jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
-		
-		celdaClickUsuario = null;
 		
 		System.out.println("La Computadora finalizó su turno. Ahora es turno del Usuario");
 		grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
@@ -744,7 +743,11 @@ public class LogicaJuego {
 	private void ingresarRobot(int x, int y){
 		Jugador robot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
 		mapa[robot.getPosicionX()][robot.getPosicionY()] = robot;
-		jugadoresUsuario.add(robot);
+		/*System.out.println("MOVIMIENTOS POSIBLES");
+		for(ComponenteGrafico c: robot.getMiMovimiento().getPosiblesMovimientos(x,y))
+			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
+				jugadoresUsuario.add(robot);
+		*/
 	}
 	
 	/**
@@ -753,7 +756,9 @@ public class LogicaJuego {
 	private void ingresarTanque(int x, int y){
 		Jugador tanque = new Tanque(x,y,this,new MovimientoRadio(this,5),new AtaqueFilaColumna(this));
 		mapa[tanque.getPosicionX()][tanque.getPosicionY()] = tanque;
-		/*for(ComponenteGrafico c: tanque.getMiMovimiento().getPosiblesMovimientos(x,y))
+		/*
+		 * System.out.println("MOVIMIENTOS POSIBLES");
+		for(ComponenteGrafico c: tanque.getMiMovimiento().getPosiblesMovimientos(x,y))
 			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
 		*/
 		jugadoresUsuario.add(tanque);
@@ -796,4 +801,11 @@ public class LogicaJuego {
 		grafica.setEdificiosDestruidos(""+edificiosDestruidos);
 	}
 	
+	private void actualizarUsuarios() {
+		grafica.setEdificiosDestruidos(""+usuariosMuertos);
+	}
+	
+	private void actualizarEnemigos() {
+		grafica.setEdificiosDestruidos(""+muertesAcumuladas);
+	}
 }

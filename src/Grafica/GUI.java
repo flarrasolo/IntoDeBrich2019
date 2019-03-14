@@ -1,9 +1,7 @@
 package Grafica;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.Icon;
@@ -21,9 +19,11 @@ public class GUI extends JFrame{
 	 private JLayeredPane contentPane;
 	 private LogicaJuego mapaLogica;
 	 private JLabel msjUsuario, lblVidas;
-	 private JLabel label;
+	 private JLabel labelTituloEnergia;
 	 private JLabel lblEdificios;
 	 private JLabel lblEdificiosDestruidos;
+	 private JLabel lblUsuarios;
+	 private JLabel lblEnemigos;
 	    
 	 /**
 	  * Create the frame.
@@ -38,7 +38,7 @@ public class GUI extends JFrame{
 	        
 	        //Setteo del Panel Contenedor
 	        
-	        setBounds(400,150,486,630);
+	        setBounds(400,150,486,665);
 	        contentPane = new JLayeredPane();
 	        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 	        contentPane.setVisible(true);
@@ -51,7 +51,7 @@ public class GUI extends JFrame{
 			Icon icono = new ImageIcon(fot.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT));
 	        fondo.setVisible(true);
 	        fondo.setIcon(icono);
-	        fondo.setBounds(0,0,600,600);
+	        fondo.setBounds(0,0,600,700);
 	        contentPane.add(fondo);
 	        contentPane.setLayer(fondo, 1);
 	        
@@ -68,23 +68,33 @@ public class GUI extends JFrame{
 			lblVidas = new JLabel("Tanque: 10  -  Robot: 10  -  Escarabajo: 10  -  Escarabajo: 10  -  Avispa: 10");
 			
 			lblVidas.setForeground(Color.WHITE);
-			lblVidas.setBounds(20, 549, 427, 22);
+			lblVidas.setBounds(20, 541, 427, 22);
 			contentPane.add(lblVidas,new Integer(2));
 			
-			label = new JLabel("PUNTOS DE ENERGIA");
-			label.setForeground(Color.WHITE);
-			label.setBounds(20, 524, 266, 14);
-			contentPane.add(label,new Integer(2));
+			labelTituloEnergia = new JLabel("PUNTOS DE ENERGIA");
+			labelTituloEnergia.setForeground(Color.WHITE);
+			labelTituloEnergia.setBounds(20, 516, 266, 14);
+			contentPane.add(labelTituloEnergia,new Integer(2));
 			
-			lblEdificios = new JLabel("Edificios: ");
+			lblEdificios = new JLabel("Energía Edificios :");
 			lblEdificios.setForeground(Color.WHITE);
-			lblEdificios.setBounds(20, 577, 400, 14);
+			lblEdificios.setBounds(20, 574, 400, 14);
 			contentPane.add(lblEdificios,new Integer(2));
 			
-			lblEdificiosDestruidos = new JLabel("Edificios Destruidos: ");
+			lblEdificiosDestruidos = new JLabel("Edificios Destruidos: 0");
 			lblEdificiosDestruidos.setForeground(Color.WHITE);
-			lblEdificiosDestruidos.setBounds(269, 524, 151, 14);
+			lblEdificiosDestruidos.setBounds(336, 599, 134, 14);
 			contentPane.add(lblEdificiosDestruidos,new Integer(2));
+			
+			lblUsuarios = new JLabel("Usuarios Destruidos:  0");
+			lblUsuarios.setForeground(Color.WHITE);
+			lblUsuarios.setBounds(20, 599, 139, 14);
+			contentPane.add(lblUsuarios,new Integer(2));
+			
+			lblEnemigos = new JLabel("Enemigos Destruidos:  0");
+			lblEnemigos.setForeground(Color.WHITE);
+			lblEnemigos.setBounds(169, 599, 157, 14);
+			contentPane.add(lblEnemigos,new Integer(2));
 			
 			mapaLogica.generarPanel();
 	        
@@ -166,6 +176,14 @@ public class GUI extends JFrame{
 	 }
 	 public void setVidasEdificios(String vidas) {
 		 lblEdificios.setText("Energía Edificios :"+vidas);
+	 }
+	 
+	 public void setUsuariosDestruidos(String cant) {
+		 lblUsuarios.setText("Usuarios Destruidos: "+cant);
+	 }
+	 
+	 public void setEnemigosDestruidos(String cant) {
+		 lblEnemigos.setText("Enemigos Destruidos: "+cant);
 	 }
 	 
 	 public void setEdificiosDestruidos(String cant) {

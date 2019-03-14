@@ -22,6 +22,8 @@ public abstract class Jugador extends ComponenteGrafico{
 		
 		miMovimiento = miMov;
 		miAtaque = miAtq;
+		
+		this.setVisible(true);
 	}
 	
 	public abstract void atacar(ComponenteGrafico celda);
