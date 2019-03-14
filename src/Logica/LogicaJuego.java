@@ -655,13 +655,11 @@ public class LogicaJuego {
 									jugarTurnoCPU();
 					}
 					else {
-					//Si no es un movimiento ni un ataque selecciono una celda equivocada
-					if (!movimientos.contains(celdaClickUsuario)){
-						grafica.setMsjUsuario("Selecciono una celda que no es Ataque ni Movimiento");
-						System.out.println("Selecciono una celda que no es Ataque ni Movimiento");
-					}
-					else
-						System.out.println("NO HIZO NADA");
+						//Si no es un movimiento ni un ataque selecciono una celda equivocada
+						if (!movimientos.contains(celdaClickUsuario)){
+							grafica.setMsjUsuario("Selecciono una celda que no es Ataque ni Movimiento");
+							System.out.println("Selecciono una celda que no es Ataque ni Movimiento");
+						}
 					}
 				}
 		
