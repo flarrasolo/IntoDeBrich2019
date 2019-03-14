@@ -723,10 +723,12 @@ public class LogicaJuego {
 		grafica.repintarPanel();
 		actualizarPanel();
 		
-		//Corro el indice de la lista de Jugadores al que le toca
-		proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
-		//Obtengo el jugador (Tanque o Robot)
-		jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
+		if(usuariosMuertos<2) {
+			//Corro el indice de la lista de Jugadores al que le toca
+			proximoJugadorUsuario = proximoJugador(proximoJugadorUsuario,jugadoresUsuario.size());
+			//Obtengo el jugador (Tanque o Robot)
+			jugadorDeTurno = jugadoresUsuario.get(proximoJugadorUsuario);
+		}
 		
 		System.out.println("La Computadora finalizó su turno. Ahora es turno del Usuario");
 		grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
@@ -746,8 +748,8 @@ public class LogicaJuego {
 		/*System.out.println("MOVIMIENTOS POSIBLES");
 		for(ComponenteGrafico c: robot.getMiMovimiento().getPosiblesMovimientos(x,y))
 			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
-				jugadoresUsuario.add(robot);
-		*/
+			*/
+		jugadoresUsuario.add(robot);
 	}
 	
 	/**
@@ -802,10 +804,10 @@ public class LogicaJuego {
 	}
 	
 	private void actualizarUsuarios() {
-		grafica.setEdificiosDestruidos(""+usuariosMuertos);
+		grafica.setUsuariosDestruidos(""+usuariosMuertos);
 	}
 	
 	private void actualizarEnemigos() {
-		grafica.setEdificiosDestruidos(""+muertesAcumuladas);
+		grafica.setEnemigosDestruidos(""+muertesAcumuladas);
 	}
 }
