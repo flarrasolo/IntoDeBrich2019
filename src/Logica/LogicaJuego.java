@@ -62,7 +62,6 @@ public class LogicaJuego {
 		crearYUbicarEnemigos();
 		resaltarLugaresPosibles();
 		agregarOyentesMouseInicio();
-
 	}
 
 	/* ----------------------------------------------------Mapa--------------------------------------------------*/
@@ -129,15 +128,19 @@ public class LogicaJuego {
 		
 	}
 	
+	/*-----------------------------------------------OYENTES-----------------------------------------------*/
+	
 	private void agregarOyentesMouseInicio() {
 		for (int i=0;i<8;i++)
-			for (int j=0;j<8;j++)
-				mapa[j][i].addMouseListener(new MouseListener() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
-						int ingX = comp.getX()/60;
-						int ingY = comp.getY()/60;
+			for (int j=0;j<4;j++) {
+				if(getComponente(i,j).getPuedoPonerJugador())
+					mapa[j][i].addMouseListener(
+						new MouseListener() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							ComponenteGrafico comp =(ComponenteGrafico) e.getSource();
+							int ingX = comp.getX()/60;
+							int ingY = comp.getY()/60;
 						
 							//Controlar click en la mitad superior
 							if(ingY <= 3 && comp.getPuedoPonerJugador()) {
@@ -149,28 +152,26 @@ public class LogicaJuego {
 								}
 								else {
 									crearRobot(ingX,ingY);
-									/*
-									System.out.println("Turno de la Computadora");
-									grafica.setMsjUsuario("Turno de la Computadora");
-									*/
 									comenzarJuego();
 								}
 							}
-					}
+						}
 
-					@Override
-					public void mousePressed(MouseEvent e) {}
+						@Override
+						public void mousePressed(MouseEvent e) {}
 
-					@Override
-					public void mouseReleased(MouseEvent e) {}
+						@Override
+						public void mouseReleased(MouseEvent e) {}
 
-					@Override
-					public void mouseEntered(MouseEvent e) {}
+						@Override
+						public void mouseEntered(MouseEvent e) {}
 
-					@Override
-					public void mouseExited(MouseEvent e) {}
+						@Override
+						public void mouseExited(MouseEvent e) {}
 					
-				}); 
+						}
+					); 
+			}
 	}
 	
 	private void agregarOyenteMouseTurnos(int i, int j) {
@@ -198,8 +199,9 @@ public class LogicaJuego {
 			public void mouseExited(MouseEvent e) {}
 			
 		}); 
-}
+	}
 	
+	/*------------------------------------------FIN OYENTES-----------------------------------------------*/
 
 	/**
 	 * Obtengo el componente en las coordenadas (x,y) en el mapa
@@ -252,11 +254,26 @@ public class LogicaJuego {
 		grafica.repintarPanel();
 		actualizarPanel();
 		
+		
+		//Elimino Oyentes de Inicio
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<4;j++) { 
+				if(getComponente(i,j).getPuedoPonerJugador()) {
+					//for (int x=0;i<8;i++) {
+						//for (int y=0;j<8;j++) {
+						 MouseListener[] oyentes = mapa[j][i].getMouseListeners();
+						mapa[j][i].removeMouseListener(oyentes[0]);
+				}
+						//}
+					//}
+			}
+		}
+		
 		//Toda celda es "clickeable", solamente va a haber accion si es una accion posible, sino no pasa nada
-		for (int i=0;i<8;i++)
+		for (int i=0;i<8;i++) {
 			for (int j=0;j<8;j++)
 				agregarOyenteMouseTurnos(i,j);
-		
+		}
 		//HiloTiempoEspera pausa = new HiloTiempoEspera(this,2);
 		//pausa.start();
 		
@@ -306,7 +323,6 @@ public class LogicaJuego {
 			mapa[y][x]=new Piso(x,y,this);
 			agregarOyenteMouseTurnos(x,y);
 			agregarGrafico(getComponente(x,y));
-		
 	}
 	
 	/**
@@ -337,6 +353,7 @@ public class LogicaJuego {
 			mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=e1;
 			enemigos.add(e1);
 			posiblesUbicaciones.remove(celdaAleatoria);
+			agregarOyenteMouseTurnos(e1.getPosicionX(),e1.getPosicionY());
 		}
 		
 		int celdaAleatoria = r.nextInt(posiblesUbicaciones.size());
@@ -345,7 +362,7 @@ public class LogicaJuego {
 		mapa[ubicacion.getPosicionY()][ubicacion.getPosicionX()]=a1;
 		enemigos.add(a1);
 		posiblesUbicaciones.remove(celdaAleatoria);
-		
+		agregarOyenteMouseTurnos(a1.getPosicionX(),a1.getPosicionY());
 	}
 	
 	private ArrayList<ComponenteGrafico> getPosiblesUbicaciones(int x,int topeI,int y){
@@ -381,7 +398,7 @@ public class LogicaJuego {
 	/**
 	 * @return Robot
 	 */
-	public Jugador getJugadorActual(){
+	public Jugador getJugadorActualUsuario(){
 		return jugadoresUsuario.get(proximoJugadorUsuario);
 	}
 	
@@ -398,8 +415,6 @@ public class LogicaJuego {
 		int posXJugador = jugadorDeTurno.getPosicionX();
 		int posYJugador = jugadorDeTurno.getPosicionY();
 
-    	//Pongo Piso donde estaba el Jugador
-    	eliminarComponente(posXJugador,posYJugador);
 		
 		//Pongo el Jugador donde hizo click el usuario
 		eliminarGrafico(getComponente(movX,movY));
@@ -407,6 +422,9 @@ public class LogicaJuego {
     	jugadorDeTurno.setPosicionY(movY);
     	setComponente(jugadorDeTurno);
     	agregarGrafico(getComponente(movX,movY));
+
+    	//Pongo Piso donde estaba el Jugador
+    	eliminarComponente(posXJugador,posYJugador);
     	
 	}	
 	
@@ -748,9 +766,15 @@ public class LogicaJuego {
 	 * Creo al Robot y lo ingreso al mapa logico
 	 */
 	private void ingresarRobot(int x, int y){
+		//Getcomponente y eliminar oyente
+		MouseListener[] oyentes = mapa[y][x].getMouseListeners();
+		mapa[y][x].removeMouseListener(oyentes[0]);
+		
 		Jugador robot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
 		mapa[robot.getPosicionY()][robot.getPosicionX()] = robot;
-		System.out.println("MOVIMIENTOS POSIBLES");
+		
+		agregarOyenteMouseTurnos(robot.getPosicionX(),robot.getPosicionY());
+		System.out.println("INGRESE ROBOT - MOVIMIENTOS POSIBLES");
 		for(ComponenteGrafico c: robot.getMiMovimiento().getPosiblesMovimientos(x,y))
 			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
 			
@@ -761,9 +785,14 @@ public class LogicaJuego {
 	 * Creo al Tanque y lo ingreso al mapa logico
 	 */
 	private void ingresarTanque(int x, int y){
+		//Getcomponente y eliminar oyente
+		MouseListener[] oyentes = mapa[y][x].getMouseListeners();
+		mapa[y][x].removeMouseListener(oyentes[0]);
+				
 		Jugador tanque = new Tanque(x,y,this,new MovimientoRadio(this,5),new AtaqueFilaColumna(this));
 		mapa[tanque.getPosicionY()][tanque.getPosicionX()] = tanque;
 		
+		agregarOyenteMouseTurnos(tanque.getPosicionX(),tanque.getPosicionY());
 		System.out.println("MOVIMIENTOS POSIBLES");
 		for(ComponenteGrafico c: tanque.getMiMovimiento().getPosiblesMovimientos(x,y))
 			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");

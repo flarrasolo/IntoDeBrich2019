@@ -139,7 +139,7 @@ public class GUI extends JFrame{
 			Icon icono = new ImageIcon(fot.getImage());
 			JLabel algo = new JLabel();
 		    
-			this.setBounds(100, 100, this.getWidth()+200, this.getHeight());
+			this.setBounds(200, 200, this.getWidth(), this.getHeight());
 			algo.setBounds(0, 0, this.getWidth(), this.getHeight());
 			algo.setPreferredSize(contentPane.getPreferredSize());
 			algo.setIcon(icono);
@@ -151,8 +151,8 @@ public class GUI extends JFrame{
 			//Icon icono = new ImageIcon(fot.getImage().getScaledInstance(this.getWidth()+200, this.getHeight(), Image.SCALE_DEFAULT));
 			Icon icono = new ImageIcon(fot.getImage());
 			JLabel algo = new JLabel();
-			this.setBounds(100, 100, this.getWidth()+200, this.getHeight());
-			algo.setBounds(0, 0, this.getWidth(), this.getHeight());
+			this.setBounds(200, 200, this.getWidth(), this.getHeight());
+			algo.setBounds(0, 0, this.getWidth()+200, this.getHeight());
 			algo.setPreferredSize(contentPane.getPreferredSize());
 			algo.setIcon(icono);
 			contentPane.add(algo);
