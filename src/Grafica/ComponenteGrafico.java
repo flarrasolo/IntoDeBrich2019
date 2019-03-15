@@ -69,6 +69,8 @@ public abstract class ComponenteGrafico extends JLabel {
 	
 	public abstract void morir();
 	
+	public abstract String imprimirme();
+	
 	/**
 	 * Recibe el ataque del jugador de turno.
 	 * @param j

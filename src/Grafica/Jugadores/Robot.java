@@ -42,5 +42,10 @@ public class Robot extends Jugador{
 	public void setImagenNormal() {
 		this.setDibujo("/Imagenes/robot.png");
 	}
+	
+	@Override
+	public String imprimirme() {
+		return "R";
+	}
 
 }

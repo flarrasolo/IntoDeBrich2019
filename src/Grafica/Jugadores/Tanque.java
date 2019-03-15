@@ -41,4 +41,9 @@ public class Tanque extends Jugador{
 	public void setImagenNormal() {
 		this.setDibujo("/Imagenes/tanque.png");
 	}
+	
+	@Override
+	public String imprimirme() {
+		return "T";
+	}
 }

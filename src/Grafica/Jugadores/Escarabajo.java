@@ -44,5 +44,10 @@ public class Escarabajo extends Jugador{
 	public void setImagenNormal() {
 		this.setDibujo("/Imagenes/escarabajo.png");
 	}
+	
+	@Override
+	public String imprimirme() {
+		return "E";
+	}
 
 }

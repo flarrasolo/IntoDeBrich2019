@@ -32,5 +32,10 @@ public class PisoResaltado extends Terreno{
 
 	@Override
 	public void morir() {}
+	
+	@Override
+	public String imprimirme() {
+		return ".";
+	}
 
 }

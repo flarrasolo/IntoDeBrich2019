@@ -261,6 +261,7 @@ public class LogicaJuego {
 		//pausa.start();
 		
 		jugadorDeTurno = enemigos.get(proximoJugadorComputadora);
+		imprimirTablero();
 		jugarTurnoCPU();
 		
 	}
@@ -662,7 +663,7 @@ public class LogicaJuego {
 						}
 					}
 				}
-		
+		imprimirTablero();
 		grafica.repintarPanel();
 		actualizarPanel();
 	}
@@ -677,6 +678,7 @@ public class LogicaJuego {
 		System.out.println("------------------------------Turno CPU------------------------------");
 		//jugadorDeTurno.setImagenResaltada();
 		grafica.repintarPanel();
+		
 		actualizarPanel();
 					
 		while(!finDelTurno) {
@@ -736,7 +738,7 @@ public class LogicaJuego {
 		
 		System.out.println("La Computadora finalizó su turno. Ahora es turno del Usuario");
 		grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
-		
+		imprimirTablero();
 		grafica.repintarPanel();
 		actualizarPanel();
 	}
@@ -748,7 +750,7 @@ public class LogicaJuego {
 	 */
 	private void ingresarRobot(int x, int y){
 		Jugador robot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
-		mapa[robot.getPosicionX()][robot.getPosicionY()] = robot;
+		mapa[robot.getPosicionY()][robot.getPosicionX()] = robot;
 		/*System.out.println("MOVIMIENTOS POSIBLES");
 		for(ComponenteGrafico c: robot.getMiMovimiento().getPosiblesMovimientos(x,y))
 			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
@@ -761,7 +763,7 @@ public class LogicaJuego {
 	 */
 	private void ingresarTanque(int x, int y){
 		Jugador tanque = new Tanque(x,y,this,new MovimientoRadio(this,5),new AtaqueFilaColumna(this));
-		mapa[tanque.getPosicionX()][tanque.getPosicionY()] = tanque;
+		mapa[tanque.getPosicionY()][tanque.getPosicionX()] = tanque;
 		/*
 		 * System.out.println("MOVIMIENTOS POSIBLES");
 		for(ComponenteGrafico c: tanque.getMiMovimiento().getPosiblesMovimientos(x,y))
@@ -814,4 +816,16 @@ public class LogicaJuego {
 	private void actualizarEnemigos() {
 		grafica.setEnemigosDestruidos(""+muertesAcumuladas);
 	}
+	
+	private void imprimirTablero() {
+		String linea ="";
+		for(int i = 0; i<8 ; i++) {
+			for(int j = 0; j<8 ; j++) {
+				linea+=" "+mapa[i][j].imprimirme();
+			}
+			System.out.println(linea);
+			linea="";
+		}
+	}
+	
 }

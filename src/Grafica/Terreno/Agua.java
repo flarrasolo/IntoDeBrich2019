@@ -26,6 +26,9 @@ public class Agua extends Terreno{
 	@Override
 	public void morir() {}
 
-
+	@Override
+	public String imprimirme() {
+		return "~";
+	}
 	
 }

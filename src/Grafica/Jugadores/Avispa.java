@@ -44,4 +44,9 @@ public class Avispa extends Jugador{
 	public void setImagenNormal() {
 		this.setDibujo("/Imagenes/avispa.png");
 	}
+
+	@Override
+	public String imprimirme() {
+		return "A";
+	}
 }

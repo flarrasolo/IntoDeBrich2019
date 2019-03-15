@@ -1,6 +1,7 @@
 package Grafica;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Image;
 
@@ -161,9 +162,12 @@ public class GUI extends JFrame{
 	 }
 	 
 	 public void repintarPanel() {
-		 this.revalidate();
-		 //contentPane.revalidate();
+		 contentPane.revalidate();
 		 contentPane.repaint();
+		 //Component [] c = contentPane.getComponents();
+		 //  for(Component cc: c)
+		 //     cc.repaint();
+		 
 	 }
 	 
 	 public void setMsjUsuario(String msj) {

@@ -30,7 +30,10 @@ public class Montaña extends Terreno{
 	@Override
 	public void morir() {	}
 
-
+	@Override
+	public String imprimirme() {
+		return "M";
+	}
 	
 	
 }

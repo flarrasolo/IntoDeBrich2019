@@ -38,4 +38,9 @@ public class Edificio extends Terreno{
 
 	@Override
 	public void morir() { logica.edificioDestruido(this); }
+	
+	@Override
+	public String imprimirme() {
+		return "|";
+	}
 }
