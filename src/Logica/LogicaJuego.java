@@ -781,6 +781,7 @@ public class LogicaJuego {
 			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
 			
 		jugadoresUsuario.add(robot);
+		
 	}
 	
 	/**
