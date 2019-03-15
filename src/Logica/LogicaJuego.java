@@ -766,6 +766,8 @@ public class LogicaJuego {
 	 * Creo al Robot y lo ingreso al mapa logico
 	 */
 	private void ingresarRobot(int x, int y){
+		//ELIMINE OYENTES VIEJOS ANTES DE INGRESAR LOS JUGADORES
+		
 		//Getcomponente y eliminar oyente
 		MouseListener[] oyentes = mapa[y][x].getMouseListeners();
 		mapa[y][x].removeMouseListener(oyentes[0]);
