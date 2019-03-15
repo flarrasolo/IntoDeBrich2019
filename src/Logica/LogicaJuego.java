@@ -408,8 +408,7 @@ public class LogicaJuego {
     	setComponente(jugadorDeTurno);
     	agregarGrafico(getComponente(movX,movY));
     	
-	}
-	
+	}	
 	
 	public boolean fallaAtaque() {
 		boolean falla = true;
@@ -457,7 +456,7 @@ public class LogicaJuego {
 		
 		//Guardo en una Lista todos las celdas de movimiento posibles de CPU
 		Movimiento movEnemigo = jugadorDeTurno.getMiMovimiento();
-		ArrayList<ComponenteGrafico> posiblesMovCPU = movEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionY(), jugadorDeTurno.getPosicionX());
+		ArrayList<ComponenteGrafico> posiblesMovCPU = movEnemigo.getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
 
 		//Cada celda que este en ambas listas, es un posible movimiento inteligente
 		//Para tomar posicion de ataque, se guarda en la lista posiblesMovInteligentes 
@@ -751,10 +750,10 @@ public class LogicaJuego {
 	private void ingresarRobot(int x, int y){
 		Jugador robot = new Robot(x,y,this,new MovimientoRadio(this,3),new AtaqueAdyacentes(this));
 		mapa[robot.getPosicionY()][robot.getPosicionX()] = robot;
-		/*System.out.println("MOVIMIENTOS POSIBLES");
+		System.out.println("MOVIMIENTOS POSIBLES");
 		for(ComponenteGrafico c: robot.getMiMovimiento().getPosiblesMovimientos(x,y))
 			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
-			*/
+			
 		jugadoresUsuario.add(robot);
 	}
 	
@@ -764,11 +763,11 @@ public class LogicaJuego {
 	private void ingresarTanque(int x, int y){
 		Jugador tanque = new Tanque(x,y,this,new MovimientoRadio(this,5),new AtaqueFilaColumna(this));
 		mapa[tanque.getPosicionY()][tanque.getPosicionX()] = tanque;
-		/*
-		 * System.out.println("MOVIMIENTOS POSIBLES");
+		
+		System.out.println("MOVIMIENTOS POSIBLES");
 		for(ComponenteGrafico c: tanque.getMiMovimiento().getPosiblesMovimientos(x,y))
 			System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
-		*/
+		
 		jugadoresUsuario.add(tanque);
 	}
 	
@@ -826,6 +825,7 @@ public class LogicaJuego {
 			System.out.println(linea);
 			linea="";
 		}
+		System.out.println("=====================================================================");
 	}
 	
 }
