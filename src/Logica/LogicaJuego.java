@@ -414,13 +414,16 @@ public class LogicaJuego {
 		//Obtengo las coordenadas del jugador de Turno en la matriz antes del movimiento para hacer el cambio.
 		int posXJugador = jugadorDeTurno.getPosicionX();
 		int posYJugador = jugadorDeTurno.getPosicionY();
-
 		
 		//Pongo el Jugador donde hizo click el usuario
 		eliminarGrafico(getComponente(movX,movY));
     	jugadorDeTurno.setPosicionX(movX); 
     	jugadorDeTurno.setPosicionY(movY);
     	setComponente(jugadorDeTurno);
+    	
+    	//AGREGO NUEVO OYENTE DE TURNO
+    	//agregarOyenteMouseTurnos(movX,movY);
+    	
     	agregarGrafico(getComponente(movX,movY));
 
     	//Pongo Piso donde estaba el Jugador
@@ -621,8 +624,8 @@ public class LogicaJuego {
 				
 				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionY(), jugadorDeTurno.getPosicionX());
 				
-				//Si no es un ataque, todavia no movio y es un posible movimiento, muevo al Jugador.
-				if(!movioUsuario && movimientos.contains(celdaClickUsuario)) {
+				//Si todavia no movio, es un posible movimiento y no es un ataque muevo al Jugador.
+				if(!movioUsuario && movimientos.contains(celdaClickUsuario) && !enemigos.contains(celdaClickUsuario)) {
 					//Mueve el Jugador a la celda clickeada
 					moverJugador(celdaClickUsuario);
 					movioUsuario = true;
@@ -721,6 +724,8 @@ public class LogicaJuego {
 						i = r.nextInt(movimientosPosibles.size());
 						ComponenteGrafico celdaDestino = movimientosPosibles.get(i);
 						this.moverJugador(celdaDestino);
+						
+						agregarOyenteMouseTurnos(jugadorDeTurno.getPosicionX(),jugadorDeTurno.getPosicionY());
 						
 						//jugadorDeTurno.setImagenNormal();
 						grafica.repintarPanel();
