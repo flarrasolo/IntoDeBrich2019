@@ -637,7 +637,10 @@ public class LogicaJuego {
 				grafica.repintarPanel();
 				actualizarPanel();
 				
-				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionY(), jugadorDeTurno.getPosicionX());
+				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
+				
+				//for(ComponenteGrafico c: movimientos)
+				//	System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
 				
 				//Si todavia no movio, es un posible movimiento y no es un ataque muevo al Jugador.
 				if(!movioUsuario && movimientos.contains(celdaClickUsuario) && !enemigos.contains(celdaClickUsuario)) {
