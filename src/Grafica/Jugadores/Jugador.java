@@ -16,6 +16,7 @@ public abstract class Jugador extends ComponenteGrafico{
 	
 	public Jugador(int x,int y,LogicaJuego l,Movimiento miMov,Movimiento miAtq){
 		super(x,y,l);
+		profundidad=2;
 		
 		puedoPonerJugador = false;
 		energia=10;
@@ -23,7 +24,6 @@ public abstract class Jugador extends ComponenteGrafico{
 		miMovimiento = miMov;
 		miAtaque = miAtq;
 		
-		this.setVisible(true);
 	}
 	
 	public abstract void atacar(ComponenteGrafico celda);

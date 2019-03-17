@@ -14,12 +14,13 @@ public class Robot extends Jugador{
 	
 	public Robot(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
 		super(x,y,l,movimiento,ataque);
-		profundidad=2;
 		
-		setDibujo("/Imagenes/robot.png");
-		puedoPonerJugador = false;
-		daño = 2;
-		dañoEdificios = 0;
+		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/robot.png"));
+		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
+		this.setIcon(icono);
+
+		setDaño(2);
+		setDañoEdificios(0);
 	}
 
 	@Override

@@ -17,16 +17,11 @@ public class PisoResaltado extends Terreno{
 		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/fondoResaltado.png"));
 		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
 		this.setIcon(icono);
+		
 		puedoPonerJugador = true;
 		energia=1;
 	}
 	
-	public boolean movimientoPosibleDisparo() {
-		return true;
-	}
-
-	public void colicion(ComponenteGrafico x) {}
-
 	@Override
 	public boolean recibirAtaque(Jugador e) { return false; }
 

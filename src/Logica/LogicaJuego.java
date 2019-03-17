@@ -254,7 +254,7 @@ public class LogicaJuego {
 		grafica.repintarPanel();
 		actualizarPanel();
 		
-		//Elimino Oyentes de Inicio
+		//Elimino Oyentes de Inicio en la Mitad Superior del tablero
 		for (int i=0;i<8;i++) {
 			for (int j=0;j<4;j++) { 
 				if(getComponente(i,j).getPuedoPonerJugador()) {
@@ -265,6 +265,7 @@ public class LogicaJuego {
 		}
 		
 		//Toda celda es "clickeable", solamente va a haber accion si es una accion posible, sino no pasa nada
+		//Agrego oyentes a todas las celdas que no sean usuarios o enemigos (Para evitar acumulacion de oyentes)
 		for (int i=0;i<8;i++) {
 			for (int j=0;j<8;j++) {
 				MouseListener[] oyentes = mapa[j][i].getMouseListeners();
@@ -332,7 +333,16 @@ public class LogicaJuego {
 		for(int i=0;i<8;i++)
 		 	for(int j=0;j<8;j++)
 		 		agregarGrafico(getComponente(i,j));		 	
-	}	
+	}
+	
+	private void refrescarPanel() {
+		for(int i=0;i<8;i++)
+		 	for(int j=0;j<8;j++) {
+		 		eliminarGrafico(getComponente(i,j));
+		 		agregarGrafico(getComponente(i,j));
+		 	}
+		 			
+	}
 	
 	public void actualizarPanel(){
 		grafica.repintarPanel();
@@ -424,6 +434,13 @@ public class LogicaJuego {
     	
     	//AGREGO NUEVO OYENTE DE TURNO
     	//agregarOyenteMouseTurnos(movX,movY);
+    	
+    	/* EN METODO ELIMINAR COMPONENTE
+    	 * eliminarGrafico(getComponente(x, y));
+			mapa[y][x]=new Piso(x,y,this);
+			agregarOyenteMouseTurnos(x,y);
+			agregarGrafico(getComponente(x,y));
+    	 */
 
     	//Pongo Piso donde estaba el Jugador
     	eliminarComponente(posXJugador,posYJugador);
@@ -757,6 +774,8 @@ public class LogicaJuego {
 		System.out.println("La Computadora finalizó su turno. Ahora es turno del Usuario");
 		grafica.setMsjUsuario("La Computadora finalizó su turno. Ahora es turno del Usuario");
 		imprimirTablero();
+		//generarPanel();
+		//refrescarPanel();
 		grafica.repintarPanel();
 		actualizarPanel();
 	}

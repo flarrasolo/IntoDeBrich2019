@@ -14,12 +14,13 @@ public class Tanque extends Jugador{
 
 	public Tanque(int x, int y, LogicaJuego l,Movimiento movimiento, Movimiento ataque) {
 		super(x,y,l,movimiento,ataque);
-		profundidad=2;
 		
-		setDibujo("/Imagenes/tanque.png");
-		puedoPonerJugador = false;
-		daño = 1;
-		dañoEdificios = 0;
+		ImageIcon fot = new ImageIcon(getClass().getResource("/Imagenes/tanque.png"));
+		Icon icono = new ImageIcon(fot.getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
+		this.setIcon(icono);
+		
+		setDaño(1);
+		setDañoEdificios(0);
 	}
 
 	@Override

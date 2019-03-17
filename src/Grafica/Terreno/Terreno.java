@@ -10,12 +10,4 @@ public abstract class Terreno extends ComponenteGrafico{
 		logica=l;
 	}
 	
-	public boolean movimientoPosible() {
-		return false;
-	}
-	
-	public boolean movimientoPosibleEnemigo(){
-		return false;
-	}
-	
 }
