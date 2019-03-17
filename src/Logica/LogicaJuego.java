@@ -56,12 +56,12 @@ public class LogicaJuego {
 		jugadoresUsuario = new ArrayList<Jugador>();
 		edificios = new ArrayList<ComponenteGrafico> ();
 		
-		
 		//Creacion del mapa
 		generacionDeMapaLogico();
+		agregarOyentesMouseInicio();
 		crearYUbicarEnemigos();
 		resaltarLugaresPosibles();
-		agregarOyentesMouseInicio();
+		
 	}
 
 	/* ----------------------------------------------------Mapa--------------------------------------------------*/
@@ -254,26 +254,26 @@ public class LogicaJuego {
 		grafica.repintarPanel();
 		actualizarPanel();
 		
-		
 		//Elimino Oyentes de Inicio
 		for (int i=0;i<8;i++) {
 			for (int j=0;j<4;j++) { 
 				if(getComponente(i,j).getPuedoPonerJugador()) {
-					//for (int x=0;i<8;i++) {
-						//for (int y=0;j<8;j++) {
-						 MouseListener[] oyentes = mapa[j][i].getMouseListeners();
+						MouseListener[] oyentes = mapa[j][i].getMouseListeners();
 						mapa[j][i].removeMouseListener(oyentes[0]);
 				}
-						//}
-					//}
 			}
 		}
 		
 		//Toda celda es "clickeable", solamente va a haber accion si es una accion posible, sino no pasa nada
 		for (int i=0;i<8;i++) {
-			for (int j=0;j<8;j++)
-				agregarOyenteMouseTurnos(i,j);
+			for (int j=0;j<8;j++) {
+				MouseListener[] oyentes = mapa[j][i].getMouseListeners();
+				if(oyentes.length==0)
+					if(!enemigos.contains(mapa[j][i]) && !jugadoresUsuario.contains(mapa[j][i]))
+						agregarOyenteMouseTurnos(i,j);
+			}
 		}
+		
 		//HiloTiempoEspera pausa = new HiloTiempoEspera(this,2);
 		//pausa.start();
 		
@@ -417,19 +417,18 @@ public class LogicaJuego {
 		
 		//Pongo el Jugador donde hizo click el usuario
 		eliminarGrafico(getComponente(movX,movY));
-    	jugadorDeTurno.setPosicionX(movX); 
+    	jugadorDeTurno.setPosicionX(movX);
     	jugadorDeTurno.setPosicionY(movY);
     	setComponente(jugadorDeTurno);
+    	agregarGrafico(getComponente(movX,movY));
     	
     	//AGREGO NUEVO OYENTE DE TURNO
     	//agregarOyenteMouseTurnos(movX,movY);
-    	
-    	agregarGrafico(getComponente(movX,movY));
 
     	//Pongo Piso donde estaba el Jugador
     	eliminarComponente(posXJugador,posYJugador);
     	
-	}	
+	}
 	
 	public boolean fallaAtaque() {
 		boolean falla = true;
@@ -618,7 +617,6 @@ public class LogicaJuego {
 			System.out.println("-----------------Turno del Usuario-----------------");
 			grafica.setMsjUsuario("Turno del Usuario");
 			
-				//jugadorDeTurno.setImagenResaltada();
 				grafica.repintarPanel();
 				actualizarPanel();
 				
@@ -636,15 +634,14 @@ public class LogicaJuego {
 
 					for(ComponenteGrafico c: jugadorDeTurno.getMiAtaque().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY()))
 						System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
-					
-					//System.out.println("Mueve Usuario");
-					grafica.setMsjUsuario("Mueve Usuario");
+
+					grafica.setMsjUsuario("Movió Usuario");
 				}
 				else {
 					ArrayList<ComponenteGrafico> ataques = jugadorDeTurno.getMiAtaque().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
 					
-					//Si no es un movimiento, entonces si es un ataque produzco el daño
-					if(ataques.contains(celdaClickUsuario)) {
+					//Si no es un movimiento, entonces si es un ataque y no es friendly fire produzco el daño
+					if(ataques.contains(celdaClickUsuario) && !jugadoresUsuario.contains(celdaClickUsuario)) {
 								//Inflige el daño
 								//if (!fallaAtaque()) {
 									jugadorDeTurno.atacar(celdaClickUsuario);
@@ -657,7 +654,6 @@ public class LogicaJuego {
 									grafica.setMsjUsuario("Fin del Turno del Usuario");
 									System.out.println("Fin del Turno del Usuario");
 									
-									//jugadorDeTurno.setImagenNormal();
 									grafica.repintarPanel();
 									actualizarPanel();
 
@@ -683,6 +679,7 @@ public class LogicaJuego {
 						}
 					}
 				}
+		
 		imprimirTablero();
 		grafica.repintarPanel();
 		actualizarPanel();
@@ -696,7 +693,7 @@ public class LogicaJuego {
 		//espera.run();
 		
 		System.out.println("------------------------------Turno CPU------------------------------");
-		//jugadorDeTurno.setImagenResaltada();
+		
 		grafica.repintarPanel();
 		
 		actualizarPanel();
@@ -725,15 +722,15 @@ public class LogicaJuego {
 						ComponenteGrafico celdaDestino = movimientosPosibles.get(i);
 						this.moverJugador(celdaDestino);
 						
-						agregarOyenteMouseTurnos(jugadorDeTurno.getPosicionX(),jugadorDeTurno.getPosicionY());
-						
-						//jugadorDeTurno.setImagenNormal();
 						grafica.repintarPanel();
 						actualizarPanel();
 						System.out.println("( "+jugadorDeTurno.getPosicionY()+" , "+jugadorDeTurno.getPosicionX()+" )");
 						movioCPU = true;
 						grafica.setMsjUsuario("Movio CPU");
 						System.out.println("Movio CPU");
+						
+						//agregarOyenteMouseTurnos(celdaDestino.getPosicionX(),celdaDestino.getPosicionY());
+						
 						}
 						else
 							if(!movioCPU && !finDelTurno)
@@ -747,7 +744,6 @@ public class LogicaJuego {
 		
 		actualizarVidas();
 	
-		//jugadorDeTurno.setImagenNormal();
 		grafica.repintarPanel();
 		actualizarPanel();
 		
@@ -771,9 +767,8 @@ public class LogicaJuego {
 	 * Creo al Robot y lo ingreso al mapa logico
 	 */
 	private void ingresarRobot(int x, int y){
-		//ELIMINE OYENTES VIEJOS ANTES DE INGRESAR LOS JUGADORES
+		//ELIMINO OYENTES VIEJOS ANTES DE INGRESAR LOS JUGADORES
 		
-		//Getcomponente y eliminar oyente
 		MouseListener[] oyentes = mapa[y][x].getMouseListeners();
 		mapa[y][x].removeMouseListener(oyentes[0]);
 		

@@ -20,8 +20,6 @@ public abstract class ComponenteGrafico extends JLabel {
 	protected int pixelX;
 	protected int pixelY;
 	protected int profundidad;
-	protected int direccion;
-	protected int puntaje;
 	protected int energia;
 	
 	protected boolean puedoPonerJugador;
@@ -61,12 +59,6 @@ public abstract class ComponenteGrafico extends JLabel {
 		pixelY=y;
 	}
 	
-	public void setDireccion(int d){}
-		
-	public void posicionImagen(int i){}
-			
-	public void puedeMover(){}
-	
 	public abstract void morir();
 	
 	public abstract String imprimirme();
@@ -78,11 +70,6 @@ public abstract class ComponenteGrafico extends JLabel {
 	 */
 	public abstract boolean recibirAtaque(Jugador j);
 	/*--------------------------------------------Consultas------------------------------------------------------*/
-	
-	public int getDireccion(){
-		return direccion;
-	}
-	
 	public int getPixelX(){
 		return pixelX;
 	}
@@ -114,14 +101,6 @@ public abstract class ComponenteGrafico extends JLabel {
 
 	public boolean getPuedoPonerJugador() {
 		return puedoPonerJugador;
-	}
-	
-	public boolean getPuedeMover(){
-		return false;
-	}
-	
-	public boolean daniaEnemigo(){
-		return false;
 	}
 	
 	public void setDibujo(String nombre) {
