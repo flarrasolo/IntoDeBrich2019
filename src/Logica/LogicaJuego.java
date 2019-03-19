@@ -432,16 +432,6 @@ public class LogicaJuego {
     	setComponente(jugadorDeTurno);
     	agregarGrafico(getComponente(movX,movY));
     	
-    	//AGREGO NUEVO OYENTE DE TURNO
-    	//agregarOyenteMouseTurnos(movX,movY);
-    	
-    	/* EN METODO ELIMINAR COMPONENTE
-    	 * eliminarGrafico(getComponente(x, y));
-			mapa[y][x]=new Piso(x,y,this);
-			agregarOyenteMouseTurnos(x,y);
-			agregarGrafico(getComponente(x,y));
-    	 */
-
     	//Pongo Piso donde estaba el Jugador
     	eliminarComponente(posXJugador,posYJugador);
     	
@@ -449,12 +439,7 @@ public class LogicaJuego {
 	
 	public boolean fallaAtaque() {
 		boolean falla = true;
-		/*
-		Random r = new Random();
-		int probab = r.nextInt(100);
-			if(probab<=29)
-				falla = true;
-		*/
+
 		double random = Math.random();// generamos un numero al azar entre 0 y 1 
 
 		if(random < 0.7)// el 70% de las veces 
@@ -639,11 +624,9 @@ public class LogicaJuego {
 				
 				ArrayList<ComponenteGrafico> movimientos = jugadorDeTurno.getMiMovimiento().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
 				
-				//for(ComponenteGrafico c: movimientos)
-				//	System.out.println("( "+c.getPosicionY()+" , "+c.getPosicionX()+" )");
-				
 				//Si todavia no movio, es un posible movimiento y no es un ataque muevo al Jugador.
 				if(!movioUsuario && movimientos.contains(celdaClickUsuario) && !enemigos.contains(celdaClickUsuario)) {
+					
 					//Mueve el Jugador a la celda clickeada
 					moverJugador(celdaClickUsuario);
 					movioUsuario = true;
@@ -660,7 +643,7 @@ public class LogicaJuego {
 				else {
 					ArrayList<ComponenteGrafico> ataques = jugadorDeTurno.getMiAtaque().getPosiblesMovimientos(jugadorDeTurno.getPosicionX(), jugadorDeTurno.getPosicionY());
 					
-					//Si no es un movimiento, entonces si es un ataque y no es friendly fire produzco el daño
+					//Si no es un movimiento (cai aca), entonces si es un ataque, y no es friendly fire, produzco el daño
 					if(ataques.contains(celdaClickUsuario) && !jugadoresUsuario.contains(celdaClickUsuario)) {
 								//Inflige el daño
 								//if (!fallaAtaque()) {
